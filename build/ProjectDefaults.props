@@ -1,0 +1,39 @@
+<Project>
+  <PropertyGroup Label="Defaults">
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Features>strict</Features>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <GenerateDocumentationFile Condition="'$(Configuration)' == 'Release'">true</GenerateDocumentationFile>
+    <ProduceReferenceAssembly Condition="'$(Configuration)' == 'Release'">true</ProduceReferenceAssembly>
+    <!--
+    https://github.com/dotnet/msbuild/blob/main/documentation/ProjectReference-Protocol.md#setplatform-negotiation -->
+    <EnableDynamicPlatformResolution>true</EnableDynamicPlatformResolution>
+    <GeneratePolyfills Condition=" '$(GeneratePolyfills)' == '' ">false</GeneratePolyfills>
+    <EmitGeneratedPolyfills Condition=" '$(EmitGeneratedPolyfills)' == '' ">false</EmitGeneratedPolyfills>
+    <ReferenceAssemblyAnnotator Condition=" '$(ReferenceAssemblyAnnotator)' == '' ">false</ReferenceAssemblyAnnotator>
+    <IsSourceGenerator Condition=" '$(IsSourceGenerator)' == '' ">false</IsSourceGenerator>
+    <IsVsix Condition=" '$(IsVsix)' == '' ">false</IsVsix>
+    <DetailedLogging Condition=" '$(DetailedLogging)' == '' ">false</DetailedLogging>
+    <IsDesktopApplication Condition=" '$(IsDesktopApplication)' == '' ">false</IsDesktopApplication>
+    <IsPublishable Condition=" '$(IsPublishable)' == '' ">false</IsPublishable>
+    <IncludeAllAnalyzers Condition=" '$(IncludeAllAnalyzers)' == '' ">false</IncludeAllAnalyzers>
+    <EnableGitVersion Condition=" '$(EnableGitVersion)' == '' ">false</EnableGitVersion>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <!-- We always want MSBuild properties generated that point at the restored location of each
+    package. -->
+    <PackageReference GeneratePathProperty="true" />
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <!-- This makes the assembly internal symbols visible to an assembly with a .Tests suffix. -->
+    <InternalsVisibleTo Include="$(AssemblyName).Tests" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <Compile Include="$(MSBuildThisFileDirectory)common\**\*.cs" />
+  </ItemGroup>
+
+</Project>

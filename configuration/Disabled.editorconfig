@@ -1,0 +1,70 @@
+is_global = true
+global_level = 101
+
+# IDE0010: Add missing cases
+dotnet_diagnostic.IDE0010.severity = none
+
+# IDE0058: computed value is never used.
+dotnet_diagnostic.IDE0058.severity = none
+
+# IDE0072: Add missing cases
+dotnet_diagnostic.IDE0072.severity = none
+
+# CA1008: Enums should have zero value
+dotnet_diagnostic.CA1008.severity = none
+
+# Mark assemblies with CLSCompliantAttribute
+dotnet_diagnostic.CA1014.severity = none
+
+# CA1031: Do not catch general exception types
+dotnet_diagnostic.CA1031.severity = none
+
+# Better fix in Roslynator
+# CA1032: Implement standard exception constructors
+dotnet_diagnostic.CA1032.severity = none
+
+# CA1054: URI-like parameters should not be strings
+dotnet_diagnostic.CA1054.severity = none
+
+# CA1055: URI-like return values should not be strings
+dotnet_diagnostic.CA1055.severity = none
+
+# CA1056: URI-like properties should not be strings
+dotnet_diagnostic.CA1056.severity = none
+
+# CA1062: Validate arguments of public methods
+dotnet_diagnostic.CA1062.severity = none
+
+# CS1591: Missing XML comment for publicly visible type or member
+dotnet_diagnostic.CA1501.severity = none
+
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = none
+
+# CA1304: Specify CultureInfo
+dotnet_diagnostic.CA1304.severity = none
+
+# CA1305: Specify IFormatProvider
+dotnet_diagnostic.CA1305.severity = none
+
+# Better fix in Meziantou.Analyzer
+# CA1307: Specify StringComparison for clarity
+dotnet_diagnostic.CA1307.severity = none
+
+# CA1707: Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
+
+# CA1848: Use the LoggerMessage delegates
+dotnet_diagnostic.CA1848.severity = none
+
+# Better fix in IDisposableAnalyzers
+# CA2000: Dispose objects before losing scope
+dotnet_diagnostic.CA2000.severity = none
+
+# Better fix in Microsoft.VisualStudio.Threading.Analyzers
+# CA2008: Do not create tasks without passing a TaskScheduler
+dotnet_diagnostic.CA2008.severity = none
+
+# CA2234: Pass system uri objects instead of strings
+dotnet_diagnostic.CA2234.severity = none
+

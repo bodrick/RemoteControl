@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetTransientDependencyTargetPaths</GetTargetPathDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GetTransientDependencyTargetPaths" AfterTargets="ResolvePackageDependenciesForBuild">
+    <ItemGroup>
+      <!-- We need to add all the (direct and indirect) dependencies. @(ResolvedCompileFileDefinitions) is a way to get that.
+        - See more about Transient Dependencies here https://turnerj.com/blog/the-pain-points-of-csharp-source-generators
+        - Follow up the issue here https://github.com/dotnet/sdk/issues/17775
+      -->
+      <TargetPathWithTargetPlatformMoniker Include="@(ResolvedCompileFileDefinitions)" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+    <Message Text="TransientDependencyTargetPaths: @(ResolvedCompileFileDefinitions)" Importance="high" />
+  </Target>
+</Project>

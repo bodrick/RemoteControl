@@ -1,4 +1,3 @@
-using Immense.RemoteControl.Server.Abstractions;
 using Immense.RemoteControl.Server.Extensions;
 using ServerExample.Services;
 
@@ -30,7 +29,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 
 app.UseAuthorization();
 

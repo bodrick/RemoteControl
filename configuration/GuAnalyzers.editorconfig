@@ -1,0 +1,18 @@
+is_global = true
+global_level = 100
+
+# GU0009: Name the boolean argument
+dotnet_diagnostic.GU0009.severity = none
+
+# GU0011: Don't ignore the returned value
+dotnet_diagnostic.GU0011.severity = none
+
+# GU0012: Check if parameter is null
+dotnet_diagnostic.GU0012.severity = none
+
+# GU0014: Prefer using parameter
+dotnet_diagnostic.GU0014.severity = none
+
+# Duplicate of S3925
+# GU0052: Mark exception with [Serializable]
+dotnet_diagnostic.GU0052.severity = none

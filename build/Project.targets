@@ -1,0 +1,11 @@
+<Project>
+  <Import Project="ProjectDefaults.targets" />
+  <Import Project="Package.targets" />
+  <Import Project="Logging.targets" Condition="'$(DetailedLogging)' == 'true'" />
+  <Import Project="SourceGenerators.targets" Condition="'$(IsSourceGenerator)' == 'true'" />
+  <Import Project="VSIX.targets" Condition="'$(IsVsix)' == 'true'" />
+  <Import Project="DesktopApplication.targets" Condition="'$(IsDesktopApplication)' == 'true'" />
+  <Import Project="Workarounds.targets" />
+  <Import Project="Analysis.targets" />
+  <Import Project="Versioning.targets" Condition="'$(EnableGitVersion)' == 'true'" />
+</Project>

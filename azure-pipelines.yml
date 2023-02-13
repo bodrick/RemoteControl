@@ -1,0 +1,137 @@
+trigger:
+  - main
+  - develop
+
+pool: PennState-dotnet-agent
+
+parameters:
+  - name: BuildConfiguration
+    displayName: Build Configuration
+    type: string
+    default: Release
+    values:
+      - Release
+      - Debug
+
+variables:
+  uiProjectName: $(Build.SourcesDirectory)/src/Home/Home.csproj
+  build_logs: $(Agent.BuildDirectory)/build_logs
+  ConfigDisplayName: (${{ parameters.BuildConfiguration }})
+  BuildArgs: --configuration ${{ parameters.BuildConfiguration }}
+
+stages:
+  - stage: Cleanup
+    displayName: 🗑️ Cleanup Build Environment
+    jobs:
+      - job: Cleanup
+        displayName: 🗑️ Cleanup Build Environment
+        steps:
+          - task: DeleteFiles@1
+            displayName: 🗑️ Cleanup
+            inputs:
+              contents: |
+                $(Build.SourcesDirectory)
+                $(Agent.BuildDirectory)
+                $(Build.ArtifactStagingDirectory)
+
+  - stage: Install
+    displayName: 📦 Install Tools
+    jobs:
+      - job: Install
+        displayName: 📦 Install Tools
+        steps:
+          - task: NuGetToolInstaller@1
+            displayName: ⚙ Install NuGet Tool
+            inputs:
+              checkLatest: true
+
+          - task: UseDotNet@2
+            displayName: ⚙ Install .NET SDK
+            inputs:
+              packageType: sdk
+              useGlobalJson: true
+              installationPath: $(Agent.ToolsDirectory)/dotnet
+
+  - stage: BuildAssets
+    displayName: 🏗️ Build Assets
+    condition: succeeded('Cleanup', 'Install')
+    dependsOn:
+      - Cleanup
+      - Install
+    jobs:
+      - job: BuildAssets
+        displayName: 🏗️ Build Assets
+        steps:
+          - task: UseNode@1
+            displayName: Install Node.js
+            inputs:
+              version: "16.x"
+              checkLatest: true
+
+          - task: npmAuthenticate@0
+            displayName: "npm Authenticate"
+            inputs:
+              workingFile: "$(Build.SourcesDirectory)/src/ClientApp/.npmrc"
+
+          - task: CmdLine@2
+            displayName: "npm install and build"
+            inputs:
+              script: |
+                call npm install
+                call npm run build
+              workingDirectory: "$(Build.SourcesDirectory)/src/ClientApp"
+
+  - stage: BuildUi
+    displayName: 🏗️ Build UI
+    condition: succeeded('BuildAssets')
+    dependsOn:
+      - BuildAssets
+    jobs:
+      - job: BuildUi
+        displayName: 🏗️ Build UI
+        steps:
+          - task: NuGetAuthenticate@1
+            displayName: 📦 Authenticate NuGet
+
+          - task: CmdLine@2
+            displayName: 🛠 dotnet build UI
+            inputs:
+              script: 'dotnet build $(uiProjectName) -c ${{ parameters.BuildConfiguration }} -o "$(Build.BinariesDirectory)/ui" /bl:"$(build_logs)/build.ui.binlog"'
+
+          - task: CmdLine@2
+            displayName: 📢 Publish UI Web Project
+            condition: succeeded()
+            inputs:
+              script: 'dotnet publish $(uiProjectName) -c ${{ parameters.BuildConfiguration }} -o "$(Build.ArtifactStagingDirectory)/ui" /bl:"$(build_logs)/publish.ui.binlog"'
+
+          - task: ArchiveFiles@2
+            displayName: 📢 Zip UI Artifact
+            condition: succeeded()
+            inputs:
+              rootFolderOrFile: $(Build.ArtifactStagingDirectory)/ui
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: $(Build.ArtifactStagingDirectory)/zip/ui.zip
+              replaceExistingArchive: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: 📢 Publish UI Artifact
+            condition: succeeded()
+            inputs:
+              path: $(Build.ArtifactStagingDirectory)/zip/ui.zip
+              artifact: Home
+
+  - stage: Logs
+    displayName: 📝 Logs
+    condition: always()
+    dependsOn:
+      - BuildUi
+    jobs:
+      - job: Logs
+        displayName: 📝 Logs
+        steps:
+          - task: PublishPipelineArtifact@1
+            displayName: 📝 Publish BinLogs
+            inputs:
+              path: $(build_logs)
+              artifact: BuildLogs-$(system.JobId)

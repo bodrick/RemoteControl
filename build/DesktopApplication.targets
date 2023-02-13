@@ -1,0 +1,27 @@
+<Project>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <PublishSingleFile>true</PublishSingleFile>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <SelfContained>true</SelfContained>
+    <PublishTrimmed>true</PublishTrimmed>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- <InvariantGlobalization>true</InvariantGlobalization> -->
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PublishDir>$(ArtifactsPublishDir)$(MSBuildProjectName)\</PublishDir>
+    <DeleteExistingFiles>true</DeleteExistingFiles>
+    <PublishProvider>FileSystem</PublishProvider>
+    <PublishUrl>$(ArtifactsPublishDir)$(MSBuildProjectName)</PublishUrl>
+    <WebPublishMethod>FileSystem</WebPublishMethod>
+  </PropertyGroup>
+</Project>

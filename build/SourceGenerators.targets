@@ -1,0 +1,32 @@
+<Project>
+  <PropertyGroup>
+    <!-- See https://turnerj.com/blog/csharp-source-generator-pain-points-february-2022-update -->
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <!-- Disable RS2008: Enable analyzer release tracking
+         Diagnostics in runtime use a different mechanism (docs/project/list-of-diagnostics.md) -->
+    <NoWarn>RS2008;$(NoWarn)</NoWarn>
+    <AnalyzerLanguage>cs</AnalyzerLanguage>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- We don't want to reference the source generator dll directly in consuming projects -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+  </PropertyGroup>
+
+  <Target Name="EnsureSourceGenerators" BeforeTargets="BeforeCompile;CoreCompile">
+
+    <Error Text="Source Generators requires MSBuild 16.8+ or .NET SDK 5.0+." Condition="$([System.Version]::Parse('16.8.0').CompareTo($([System.Version]::Parse($(MSBuildVersion))))) == 1" />
+
+    <!-- See https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/langversion-compiler-option -->
+    <Warning Code="THIS001" Text="Assembly uses Roslyn source generators, which are only supported in C# 9.0 or greater at the moment." Condition="'$(Language)' != 'C#' OR
+                  ('$(LangVersion)' != 'preview' AND
+                   '$(LangVersion)' != 'latest' AND
+                   '$(LangVersion)' != 'latestMajor' AND
+                   '$(LangVersion)' &lt; '9.0')" />
+  </Target>
+
+  <Import Project="SourceGenerators.Package.targets" Condition="'$(GeneratePackageOnBuild)' == 'true'" />
+  <!-- <Import Project="SourceGenerators.AddGenerationTimeReferences.targets" /> -->
+</Project>

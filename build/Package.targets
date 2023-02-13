@@ -1,0 +1,14 @@
+<Project>
+
+  <PropertyGroup>
+    <PackageOutputPath>$(ArtifactsPackagesDir)</PackageOutputPath>
+  </PropertyGroup>
+
+  <!--
+    Include package icon in the package.
+  -->
+  <ItemGroup Condition="'$(PackageIcon)' != '' and '$(IsPackable)' == 'true'">
+    <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="$(PackageIcon)" Visible="false" />
+  </ItemGroup>
+
+</Project>

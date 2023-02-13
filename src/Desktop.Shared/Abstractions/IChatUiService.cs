@@ -1,0 +1,12 @@
+﻿using Immense.RemoteControl.Shared.Models;
+
+namespace Immense.RemoteControl.Desktop.Shared.Abstractions;
+
+public interface IChatUiService
+{
+    event EventHandler ChatWindowClosed;
+
+    void ShowChatWindow(string organizationName, StreamWriter writer);
+
+    Task ReceiveChatAsync(ChatMessage chatMessage);
+}

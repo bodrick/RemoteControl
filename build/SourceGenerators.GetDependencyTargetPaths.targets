@@ -1,0 +1,13 @@
+<Project>
+
+  <PropertyGroup>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GetDependencyTargetPaths" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+    <Message Text="DependencyTargetPaths: @(ReferenceCopyLocalPaths)" Importance="high" />
+  </Target>
+</Project>

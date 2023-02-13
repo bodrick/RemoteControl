@@ -1,0 +1,63 @@
+<Project>
+  <ItemGroup>
+    <!-- Add all editorconfig files -->
+    <GlobalAnalyzerConfigFiles Include="$(ConfigDir)*.editorconfig" />
+  </ItemGroup>
+
+  <PropertyGroup Label="Analysis">
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- <AnalysisLevel>latest-all</AnalysisLevel> -->
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+    <ReportAnalyzer>true</ReportAnalyzer>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+
+    <AnalysisLevelDesign>latest-recommended</AnalysisLevelDesign>
+    <AnalysisLevelDocumentation>latest-recommended</AnalysisLevelDocumentation>
+    <AnalysisLevelGlobalization>latest-recommended</AnalysisLevelGlobalization>
+    <AnalysisLevelInteroperability>latest-recommended</AnalysisLevelInteroperability>
+    <AnalysisLevelMaintainability>latest-recommended</AnalysisLevelMaintainability>
+    <AnalysisLevelNaming>latest-recommended</AnalysisLevelNaming>
+    <AnalysisLevelPerformance>latest-recommended</AnalysisLevelPerformance>
+    <AnalysisLevelSingleFile>latest-recommended</AnalysisLevelSingleFile>
+    <AnalysisLevelReliability>latest-recommended</AnalysisLevelReliability>
+    <AnalysisLevelSecurity>latest-recommended</AnalysisLevelSecurity>
+    <AnalysisLevelStyle>latest-recommended</AnalysisLevelStyle>
+    <AnalysisLevelUsage>latest-recommended</AnalysisLevelUsage>
+  </PropertyGroup>
+
+  <ItemGroup Label="Analyzers">
+    <PackageReference Include="AsyncFixer" Version="1.6.0" PrivateAssets="All" />
+    <PackageReference Include="Gu.Analyzers" Version="2.0.2" PrivateAssets="All" />
+    <PackageReference Include="IDisposableAnalyzers" Version="4.0.2" PrivateAssets="All" />
+    <!-- <PackageReference Include="Meziantou.Analyzer" Version="1.0.733" PrivateAssets="All" /> -->
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.5.22" PrivateAssets="All" />
+    <PackageReference Include="Roslynator.Analyzers" Version="4.2.0" PrivateAssets="All" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.2.0" PrivateAssets="All" />
+    <!-- <PackageReference Include="SecurityCodeScan.VS2019" Version="5.6.7" PrivateAssets="All" /> -->
+    <!-- <PackageReference Include="SonarAnalyzer.CSharp" Version="8.46.0.54807" PrivateAssets="All" /> -->
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup Label="Global Package References">
+    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="All" />
+    <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.125" PrivateAssets="All" />
+  </ItemGroup>
+
+  <PropertyGroup Label="NoWarn">
+    <!-- Warning CS1591 Missing XML comment for publicly visible type or member '<name>' -->
+    <!-- TODO: Well.. Write XML comments... -->
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <!--
+      Workaround for changing severity of rules with Location.None - e.g. CA1014
+        - see https://github.com/dotnet/roslyn/issues/37876#issuecomment-738042719
+      Needed until those types of rules can be disabled in a Global Analyzer Config
+        - when https://github.com/dotnet/roslyn/issues/48634 is implemented.
+      # CA1014: Mark assemblies with CLSCompliantAttribute
+    -->
+    <NoWarn>$(NoWarn);CA1014</NoWarn>
+  </PropertyGroup>
+</Project>

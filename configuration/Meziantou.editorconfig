@@ -1,0 +1,47 @@
+is_global = true
+global_level = 100
+
+# MA0003: Add parameter name to improve readability
+dotnet_diagnostic.MA0003.severity = none
+
+# MA0007: Add a comma after the last value
+dotnet_diagnostic.MA0007.severity = none
+
+# MA0011: IFormatProvider is missing
+dotnet_diagnostic.MA0011.severity = none
+
+# Duplicate of CA2201
+# MA0012: Do not raise reserved exception type
+dotnet_diagnostic.MA0012.severity = none
+
+# Duplicate of CA1000
+# MA0018: Do not declare static members on generic types
+dotnet_diagnostic.MA0018.severity = none
+
+# Duplicate of RCS1077
+# MA0020: Use direct methods instead of LINQ methods
+dotnet_diagnostic.MA0020.severity = none
+
+# MA0023: Add RegexOptions.ExplicitCapture
+dotnet_diagnostic.MA0023.severity = none
+
+# Duplicate of S4830
+# MA0039: Do not write your own certificate validation method
+dotnet_diagnostic.MA0039.severity = none
+
+# Duplicate of CA1724
+# MA0049: Type name should not match containing namespace
+dotnet_diagnostic.MA0049.severity = none
+
+# MA0051: Method is too long
+dotnet_diagnostic.MA0051.severity = none
+
+# MA0075: Do not use implicit culture-sensitive ToString
+dotnet_diagnostic.MA0075.severity = none
+
+# MA0076: Do not use implicit culture-sensitive ToString in interpolated strings
+dotnet_diagnostic.MA0076.severity = none
+
+# MA0101: String contains an implicit end of line character
+dotnet_diagnostic.MA0101.severity = none
+

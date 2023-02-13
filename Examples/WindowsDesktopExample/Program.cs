@@ -3,12 +3,10 @@ using Immense.RemoteControl.Desktop.UI.WPF.Services;
 using Immense.RemoteControl.Desktop.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 using WindowsDesktopExample;
 
-
 // The service provider is returned in case it's needed.
-var provider = await Startup.UseRemoteControlClient(
+var provider = await Startup.UseRemoteControlClientAsync(
     args,
     config =>
     {
@@ -30,7 +28,7 @@ var provider = await Startup.UseRemoteControlClient(
 var shutdownService = provider.GetRequiredService<IShutdownService>();
 Console.CancelKeyPress += async (s, e) =>
 {
-    await shutdownService.Shutdown();
+    await shutdownService.ShutdownAsync();
 };
 
 var dispatcher = provider.GetRequiredService<IWindowsUiDispatcher>();

@@ -1,0 +1,59 @@
+is_global = true
+global_level = 100
+
+
+# ReSharper inspection severities
+resharper_arrange_redundant_parentheses_highlighting = hint
+resharper_arrange_this_qualifier_highlighting = hint
+resharper_arrange_type_member_modifiers_highlighting = hint
+resharper_arrange_type_modifiers_highlighting = hint
+resharper_built_in_type_reference_style_for_member_access_highlighting = hint
+resharper_built_in_type_reference_style_highlighting = hint
+resharper_redundant_base_qualifier_highlighting = warning
+resharper_suggest_var_or_type_built_in_types_highlighting = hint
+resharper_suggest_var_or_type_elsewhere_highlighting = hint
+resharper_suggest_var_or_type_simple_types_highlighting = hint
+resharper_switch_statement_handles_some_known_enum_values_with_default_highlighting = none
+
+
+# ReSharper properties
+configure_await_analysis_mode = library
+resharper_align_linq_query = true
+resharper_blank_lines_around_single_line_auto_property = 1
+resharper_csharp_new_line_before_while = true
+resharper_csharp_wrap_after_declaration_lpar = true
+resharper_csharp_wrap_after_invocation_lpar = true
+resharper_csharp_wrap_arguments_style = chop_if_long
+resharper_csharp_wrap_chained_method_calls = chop_if_long
+resharper_csharp_wrap_parameters_style = chop_if_long
+resharper_enforce_line_ending_style = true
+resharper_keep_existing_declaration_block_arrangement = false
+resharper_keep_existing_embedded_arrangement = false
+resharper_keep_existing_embedded_block_arrangement = false
+resharper_keep_existing_expr_member_arrangement = false
+resharper_keep_existing_initializer_arrangement = false
+resharper_keep_existing_invocation_parens_arrangement = false
+resharper_keep_existing_linebreaks = false
+resharper_keep_existing_property_patterns_arrangement = false
+resharper_keep_existing_switch_expression_arrangement = false
+resharper_local_function_body = expression_body
+resharper_no_indent_inside_elements = html,thead,tbody,tfoot
+resharper_place_accessorholder_attribute_on_same_line = false
+resharper_place_expr_method_on_single_line = true
+resharper_place_field_attribute_on_same_line = false
+resharper_place_simple_initializer_on_single_line = false
+resharper_sort_attributes = true
+resharper_sort_class_selectors = true
+resharper_space_before_self_closing = true
+resharper_wrap_array_initializer_style = chop_if_long
+resharper_wrap_braced_init_list_style = chop_if_long
+resharper_wrap_chained_binary_expressions = chop_if_long
+resharper_wrap_chained_binary_patterns = chop_if_long
+resharper_wrap_object_and_collection_initializer_style = chop_always
+# Dotnet namespace options
+# dotnet_style_namespace_match_folder = true:suggestion
+# dotnet_diagnostic.IDE0130.severity = suggestion
+
+# Defer to ReSharper
+dotnet_style_namespace_match_folder = true:none
+dotnet_diagnostic.IDE0130.severity = none

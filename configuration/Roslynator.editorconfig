@@ -1,0 +1,30 @@
+is_global = true
+global_level = 100
+
+# Enable/disable all refactorings
+roslynator_refactorings.enabled = true
+
+# Enable/disable all compiler diagnostic fixes
+roslynator_compiler_diagnostic_fixes.enabled = true
+
+roslynator_accessibility_modifiers = explicit
+
+# RCS1096: Use 'HasFlag' method or bitwise operator
+roslynator_enum_has_flag_style = method
+
+# RCS1250: Use implicit/explicit object creation
+roslynator_object_creation_type_style = implicit_when_type_is_obvious
+roslynator_use_var_instead_of_implicit_object_creation = true
+
+# Convert comment to documentation comment
+dotnet_diagnostic.rcs1181.severity = none
+
+# Declare enum value as combination of names
+dotnet_diagnostic.rcs1191.severity = none
+
+# RCS1237: ([deprecated] use RCS1254 instead) Use bit shift operator.
+dotnet_diagnostic.RCS1237.severity = none
+
+# Better fix in Microsoft.VisualStudio.Threading.Analyzers
+# RCS1047: Non-asynchronous method name should not end with 'Async'.
+dotnet_diagnostic.RCS1047.severity = none

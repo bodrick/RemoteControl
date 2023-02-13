@@ -1,0 +1,22 @@
+<Project>
+  <PropertyGroup Label="Package">
+    <Authors>The Pennsylvania State University</Authors>
+    <Company>The Pennsylvania State University</Company>
+    <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
+    <Copyright>Copyright © $(CurrentYear)</Copyright>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+
+    <PackageIcon>icon-256x256.png</PackageIcon>
+    <PackageIconFullPath>$(MSBuildThisFileDirectory)Assets\icon-256x256.png</PackageIconFullPath>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <!-- <NoWarn>$(NoWarn);NU1504;NU1505;NU1701</NoWarn> -->
+  </PropertyGroup>
+
+  <!-- Reproducible Builds: https://www.meziantou.net/creating-reproducible-build-in-dotnet.htm -->
+  <ItemGroup Label="Reproducible Builds">
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>

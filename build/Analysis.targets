@@ -1,0 +1,24 @@
+<Project>
+  <PropertyGroup Label="NoWarn" Condition="'$(GenerateDocumentationFile)' != 'true' Or '$(Configuration)' != 'Release'">
+    <!--  Xml Comment Analysis Disabled -->
+    <!--  https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA0001.md -->
+
+    <NoWarn>$(NoWarn);SA0001</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Analysis" Condition="'$(Configuration)' == 'Debug'">
+    <!-- <EnableNETAnalyzers>false</EnableNETAnalyzers> -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+  </PropertyGroup>
+
+  <ItemGroup Label="Other Analyzers" Condition="'$(IncludeAllAnalyzers)' == 'true'">
+    <PackageReference Include="codecracker.CSharp" Version="1.1.0" PrivateAssets="All" />
+    <PackageReference Include="FunFair.CodeAnalysis" Version="5.9.0.1493" PrivateAssets="All" />
+    <PackageReference Include="Nullable.Extended.Analyzer" Version="1.10.4539" PrivateAssets="All" />
+    <PackageReference Include="Philips.CodeAnalysis.DuplicateCodeAnalyzer" Version="1.1.7" PrivateAssets="All" />
+    <PackageReference Include="Philips.CodeAnalysis.MaintainabilityAnalyzers" Version="1.2.29" PrivateAssets="All" />
+    <PackageReference Include="SmartAnalyzers.CSharpExtensions.Annotations" Version="4.2.7" PrivateAssets="All" />
+    <PackageReference Include="ToStringWithoutOverrideAnalyzer" Version="0.6.0" PrivateAssets="All" />
+  </ItemGroup>
+</Project>

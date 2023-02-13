@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Desktop.Windows\Desktop.Windows.csproj" />
+    <ProjectReference Include="..\..\src\Desktop.Windows\Desktop.Windows.csproj" />
   </ItemGroup>
 
 </Project>

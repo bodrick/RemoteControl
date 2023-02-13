@@ -1,0 +1,13 @@
+<Project>
+
+  <Target Name="DisplaySettings" BeforeTargets="BeforeBuild">
+    <Message Importance="High" Text="Repo Root = $(RepoRoot)" />
+    <Message Importance="High" Text="Target Framework = $(TargetFramework)" />
+    <Message Importance="High" Text="Project File Name = $(MSBuildProjectFile)" />
+    <Message Importance="High" Text="Project Extension = $(MSBuildProjectExtension)" />
+    <Message Importance="High" Text="ReferenceAssemblyAnnotator = $(ReferenceAssemblyAnnotator)" />
+    <Message Importance="High" Text="GeneratePolyfills = $(GeneratePolyfills)" />
+    <Message Importance="High" Text="IsSourceGenerator = $(IsSourceGenerator)" />
+  </Target>
+
+</Project>

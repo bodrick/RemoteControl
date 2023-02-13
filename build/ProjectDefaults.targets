@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <!-- Run Deploy step by default when the solution is build directly via msbuild (from command line or VS). -->
+    <DeployProjectOutput Condition="'$(DeployProjectOutput)' == ''">true</DeployProjectOutput>
+  </PropertyGroup>
+
+  <!-- Default empty deploy target. -->
+  <Target Name="Deploy" AfterTargets="Build" Condition="'$(DeployProjectOutput)' == 'true'" />
+
+</Project>

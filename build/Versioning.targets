@@ -1,0 +1,13 @@
+<Project>
+  <ItemGroup Label="Package References">
+    <PackageReference Include="GitVersion.MsBuild" Version="5.12.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <PropertyGrooup>
+    <DisableGitVersionTask Condition="'$(Configuration)' == 'Debug'">true</DisableGitVersionTask>
+  </PropertyGrooup>
+
+  <Target Name="Versioning" AfterTargets="GetVersion">
+    <Message Text="GitVersion_FullSemVer: $(GitVersion_FullSemVer)"/>
+  </Target>
+</Project>

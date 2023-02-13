@@ -1,0 +1,7 @@
+<Project>
+  <Import Project="ProjectLayout.props" />
+  <Import Project="ProjectDefaults.props" />
+  <Import Project="Analysis.props" />
+  <Import Project="Package.props" />
+  <Import Project="Workarounds.props" />
+</Project>

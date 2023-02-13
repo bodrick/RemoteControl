@@ -1,0 +1,27 @@
+<Project>
+  <!--
+    Properties describing the layout of the repo.
+  -->
+
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <PlatformName Condition="'$(PlatformName)' == ''">$(Platform)</PlatformName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RepoRoot Condition="'$(RepoRoot)' == ''">$([MSBuild]::NormalizeDirectory('$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'global.json'))'))</RepoRoot>
+    <ConfigDir Condition="'$(ConfigDir)' == ''">$([MSBuild]::NormalizeDirectory('$(RepoRoot)', 'configuration'))</ConfigDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ArtifactsDir Condition="'$(ArtifactsDir)' == ''">$([MSBuild]::NormalizeDirectory('$(RepoRoot)', 'artifacts'))</ArtifactsDir>
+    <ArtifactsObjDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsDir)', 'obj'))</ArtifactsObjDir>
+    <ArtifactsBinDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsDir)', 'bin'))</ArtifactsBinDir>
+    <ArtifactsLogDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsDir)', 'log', '$(Configuration)'))</ArtifactsLogDir>
+    <ArtifactsTmpDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsDir)', 'tmp', '$(Configuration)'))</ArtifactsTmpDir>
+    <ArtifactsTestResultsDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsDir)', 'TestResults', '$(Configuration)'))</ArtifactsTestResultsDir>
+    <ArtifactsPackagesDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsDir)', 'packages', '$(Configuration)'))</ArtifactsPackagesDir>
+    <ArtifactsPublishDir>$([MSBuild]::NormalizeDirectory('$(ArtifactsDir)', 'publish', '$(Configuration)'))</ArtifactsPublishDir>
+  </PropertyGroup>
+</Project>

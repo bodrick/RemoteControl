@@ -1,0 +1,40 @@
+is_global = true
+global_level = 100
+
+# Duplicate of IDE1006
+# S101: Types should be named in PascalCase
+dotnet_diagnostic.S101.severity = none
+
+# Duplicate of CA2201
+# S112: General exceptions should never be thrown
+dotnet_diagnostic.S112.severity = none
+
+# S125: Sections of code should not be commented out
+dotnet_diagnostic.S125.severity = silent
+
+# Better fix in Roslynator
+# S927: Parameter names should match base declaration and other partial definitions
+dotnet_diagnostic.S927.severity = none
+
+# Better fix in Roslynator
+# S1066: Collapsible "if" statements should be merged
+dotnet_diagnostic.S1066.severity = none
+
+# Duplicate of CA1051
+# S1104: Fields should not have public accessibility
+dotnet_diagnostic.S1104.severity = none
+
+# S1135: Track uses of "TODO" tags
+dotnet_diagnostic.S1135.severity = suggestion
+
+# Duplicate of RCS1213
+# S1144: Unused private types or members should be removed
+dotnet_diagnostic.S1144.severity = none
+
+# Duplicate of CA1008
+# S2346: Flags enumerations zero-value members should be named "None"
+dotnet_diagnostic.S2346.severity = none
+
+# Better fix in Roslynator
+# S3626: Jump statements should not be redundant
+dotnet_diagnostic.S3626.severity = none
