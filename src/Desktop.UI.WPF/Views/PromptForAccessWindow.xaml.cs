@@ -23,7 +23,7 @@ public partial class PromptForAccessWindow : Window
 
     private void MinimizeButton_Click(object sender, RoutedEventArgs e)
     {
-        this.WindowState = WindowState.Minimized;
+        WindowState = WindowState.Minimized;
     }
 
     private void Window_ContentRendered(object sender, EventArgs e)

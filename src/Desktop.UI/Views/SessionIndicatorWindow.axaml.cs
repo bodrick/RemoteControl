@@ -54,6 +54,7 @@ public partial class SessionIndicatorWindow : Window
             {
                 return;
             }
+
             await shutdownService.ShutdownAsync();
         }
     }

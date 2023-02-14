@@ -17,6 +17,6 @@ public partial class HostNamePrompt : Window
 
     private void OKButton_Click(object sender, RoutedEventArgs e)
     {
-        this.Close();
+        Close();
     }
 }

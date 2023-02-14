@@ -39,53 +39,50 @@ public class SessionIndicatorWin : ISessionIndicator
                 return;
             }
 
-            _dispatcher.InvokeWpf(() =>
-            {
-                _dispatcher.CurrentApp.Exit += App_Exit;
-            });
+            _dispatcher.InvokeWpf(() => _dispatcher.CurrentApp.Exit += App_Exit);
 
-            _dispatcher.InvokeWinForms(async () =>
-            {
-                _container = new Container();
-                _contextMenuStrip = new ContextMenuStrip(_container);
-                _contextMenuStrip.Items.Add("Exit", null, ExitMenuItem_Click);
-
-                Icon icon;
-
-                var brandingInfo = await _brandingProvider.GetBrandingInfoAsync();
-                if (brandingInfo.Icon?.Any() == true)
+            _dispatcher.InvokeWinForms(
+                async () =>
                 {
-                    using var ms = new MemoryStream(brandingInfo.Icon);
-                    using var bitmap = new Bitmap(ms);
-                    icon = Icon.FromHandle(bitmap.GetHicon());
-                }
-                else
-                {
-                    var fileName = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
-                    if (!string.IsNullOrWhiteSpace(fileName) &&
-                        Icon.ExtractAssociatedIcon(fileName) is Icon fileIcon)
+                    _container = new Container();
+                    _contextMenuStrip = new ContextMenuStrip(_container);
+                    _contextMenuStrip.Items.Add("Exit", null, ExitMenuItem_Click);
+
+                    Icon icon;
+
+                    var brandingInfo = await _brandingProvider.GetBrandingInfoAsync();
+                    if (brandingInfo.Icon?.Any() == true)
                     {
-                        icon = fileIcon;    
+                        using var ms = new MemoryStream(brandingInfo.Icon);
+                        using var bitmap = new Bitmap(ms);
+                        icon = Icon.FromHandle(bitmap.GetHicon());
                     }
                     else
                     {
-                        using var mrs = typeof(Result).Assembly.GetManifestResourceStream("Immense.RemoteControl.Shared.Assets.DefaultIcon.ico");
-                        icon = new Icon(mrs!);
+                        var fileName = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+                        if (!string.IsNullOrWhiteSpace(fileName) && Icon.ExtractAssociatedIcon(fileName) is Icon fileIcon)
+                        {
+                            icon = fileIcon;
+                        }
+                        else
+                        {
+                            using var mrs = typeof(Result).Assembly.GetManifestResourceStream("Immense.RemoteControl.Shared.Assets.DefaultIcon.ico");
+                            icon = new Icon(mrs!);
+                        }
                     }
-                }
 
-                _notifyIcon = new NotifyIcon(_container)
-                {
-                    Icon = icon,
-                    Text = "Remote Control Session",
-                    BalloonTipIcon = ToolTipIcon.Info,
-                    BalloonTipText = "A remote control session has started.",
-                    BalloonTipTitle = "Remote Control Started",
-                    ContextMenuStrip = _contextMenuStrip,
-                    Visible = true
-                };
-                _notifyIcon.ShowBalloonTip(3000);
-            });
+                    _notifyIcon = new NotifyIcon(_container)
+                    {
+                        Icon = icon,
+                        Text = "Remote Control Session",
+                        BalloonTipIcon = ToolTipIcon.Info,
+                        BalloonTipText = "A remote control session has started.",
+                        BalloonTipTitle = "Remote Control Started",
+                        ContextMenuStrip = _contextMenuStrip,
+                        Visible = true
+                    };
+                    _notifyIcon.ShowBalloonTip(3000);
+                });
         }
         catch (Exception ex)
         {
@@ -103,8 +100,5 @@ public class SessionIndicatorWin : ISessionIndicator
         }
     }
 
-    private async void ExitMenuItem_Click(object? sender, EventArgs e)
-    {
-        await _hubConnection.DisconnectAllViewersAsync();
-    }
+    private async void ExitMenuItem_Click(object? sender, EventArgs e) => await _hubConnection.DisconnectAllViewersAsync();
 }

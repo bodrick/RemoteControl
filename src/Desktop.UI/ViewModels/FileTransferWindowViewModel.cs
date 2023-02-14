@@ -75,6 +75,7 @@ public class FileTransferWindowViewModel : BrandedViewModelBase, IFileTransferWi
         {
             return;
         }
+
         FileUploads.Remove(fileUpload);
         fileUpload.CancellationTokenSource.Cancel();
     }
@@ -86,18 +87,9 @@ public class FileTransferWindowViewModel : BrandedViewModelBase, IFileTransferWi
             FilePath = filePath
         };
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            FileUploads.Add(fileUpload);
-        });
+        await Dispatcher.UIThread.InvokeAsync(() => FileUploads.Add(fileUpload));
 
-        await _fileTransferService.UploadFileAsync(fileUpload, _viewer, fileUpload.CancellationTokenSource.Token, async progress =>
-        {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                fileUpload.PercentProgress = progress;
-            });
-        });
+        await _fileTransferService.UploadFileAsync(fileUpload, _viewer, fileUpload.CancellationTokenSource.Token, async progress => await Dispatcher.UIThread.InvokeAsync(() => fileUpload.PercentProgress = progress));
     }
 
     private async Task OpenFileUploadDialogAsync(FileTransferWindow? window)
@@ -120,6 +112,7 @@ public class FileTransferWindowViewModel : BrandedViewModelBase, IFileTransferWi
         {
             return;
         }
+
         foreach (var file in result)
         {
             if (File.Exists(file))

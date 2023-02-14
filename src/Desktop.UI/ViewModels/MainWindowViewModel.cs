@@ -127,10 +127,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
         }
     });
 
-    public ICommand OpenOptionsMenu { get; } = new RelayCommand<Button>(button =>
-    {
-        button?.ContextMenu?.Open(button);
-    });
+    public ICommand OpenOptionsMenu { get; } = new RelayCommand<Button>(button => button?.ContextMenu?.Open(button));
 
     public ICommand RemoveViewersCommand { get; }
 
@@ -154,7 +151,8 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
         {
             return;
         }
-        await _dispatcher.CurrentApp.Clipboard.SetTextAsync($"{Host}/RemoteControl/Viewer?sessionID={StatusMessage.Replace(" ", "")}");
+
+        await _dispatcher.CurrentApp.Clipboard.SetTextAsync($"{Host}/RemoteControl/Viewer?sessionID={StatusMessage.Replace(" ", string.Empty)}");
 
         CopyMessageOpacity = 1;
         IsCopyMessageVisible = true;
@@ -164,6 +162,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
             CopyMessageOpacity -= .05;
             await Task.Delay(25);
         }
+
         IsCopyMessageVisible = false;
     }
 
@@ -172,16 +171,13 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
         var sessionId = await _hubConnection.GetSessionIDAsync();
         await _hubConnection.SendAttendedSessionInfoAsync(Environment.MachineName);
 
-        var formattedSessionID = "";
+        var formattedSessionID = string.Empty;
         for (var i = 0; i < sessionId.Length; i += 3)
         {
             formattedSessionID += $"{sessionId.Substring(i, 3)} ";
         }
 
-        await _dispatcher.InvokeAsync(() =>
-        {
-            StatusMessage = formattedSessionID.Trim();
-        });
+        await _dispatcher.InvokeAsync(() => StatusMessage = formattedSessionID.Trim());
     }
 
     public async Task InitAsync()
@@ -233,11 +229,9 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
                     });
                 };
 
-                _hubConnection.Connection.Reconnected += async (id) =>
-                {
-                    await GetSessionIDAsync();
-                };
+                _hubConnection.Connection.Reconnected += async (id) => await GetSessionIDAsync();
             }
+
             await ApplyBrandingAsync();
 
             await GetSessionIDAsync();
@@ -287,6 +281,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
         {
             return;
         }
+
         var viewerList = list ?? new AvaloniaList<object>();
         foreach (var viewer in viewerList.Cast<Viewer>())
         {
@@ -322,7 +317,6 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
                 _logger.LogError("Failed to install dependencies.");
             }
         }
-
     }
 
     private void ScreenCastRequested(object? sender, ScreenCastRequest screenCastRequest)
@@ -339,10 +333,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
 
     private async void ViewerAdded(object? sender, IViewer viewer)
     {
-        await _dispatcher.InvokeAsync(() =>
-        {
-            Viewers.Add(viewer);
-        });
+        await _dispatcher.InvokeAsync(() => Viewers.Add(viewer));
     }
 
     private async void ViewerRemoved(object? sender, string viewerID)

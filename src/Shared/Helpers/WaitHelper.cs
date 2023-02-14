@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 namespace Immense.RemoteControl.Shared.Helpers;
 
@@ -11,6 +11,7 @@ public static class WaitHelper
         {
             Thread.Sleep(pollingMs);
         }
+
         return condition();
     }
 
@@ -21,6 +22,7 @@ public static class WaitHelper
         {
             await Task.Delay(pollingMs);
         }
+
         return condition();
     }
 }

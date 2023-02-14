@@ -50,9 +50,7 @@ public class ScreenCapturerWin : IScreenCapturer
     private SKBitmap? _previousFrame;
     private bool _needsInit;
 
-    public ScreenCapturerWin(
-        IImageHelper imageHelper,
-        ILogger<ScreenCapturerWin> logger)
+    public ScreenCapturerWin(IImageHelper imageHelper, ILogger<ScreenCapturerWin> logger)
     {
         _imageHelper = imageHelper;
         _logger = logger;
@@ -78,13 +76,12 @@ public class ScreenCapturerWin : IScreenCapturer
             ClearDirectXOutputs();
             GC.SuppressFinalize(this);
         }
-        catch { }
+        catch
+        {
+        }
     }
 
-    public IEnumerable<string> GetDisplayNames()
-    {
-        return Screen.AllScreens.Select(x => x.DeviceName);
-    }
+    public IEnumerable<string> GetDisplayNames() => Screen.AllScreens.Select(x => x.DeviceName);
 
     public SKRect GetFrameDiffArea()
     {
@@ -92,6 +89,7 @@ public class ScreenCapturerWin : IScreenCapturer
         {
             return SKRect.Empty;
         }
+
         return _imageHelper.GetDiffArea(_currentFrame, _previousFrame, CaptureFullscreen);
     }
 
@@ -101,6 +99,7 @@ public class ScreenCapturerWin : IScreenCapturer
         {
             return Result.Fail<SKBitmap>("Current frame cannot be empty.");
         }
+
         return _imageHelper.GetImageDiff(_currentFrame, _previousFrame);
     }
 
@@ -136,7 +135,7 @@ public class ScreenCapturerWin : IScreenCapturer
                     result = GetBitBltFrame();
                     if (!result.IsSuccess || result.Value is null)
                     {
-                        var ex = result.Exception ?? new("Unknown error.");
+                        var ex = result.Exception ?? new Exception("Unknown error.");
                         _logger.LogError(ex, "Error while getting next frame.");
                         return Result.Fail<SKBitmap>(ex);
                     }
@@ -154,10 +153,7 @@ public class ScreenCapturerWin : IScreenCapturer
         }
     }
 
-    public int GetScreenCount()
-    {
-        return Screen.AllScreens.Length;
-    }
+    public int GetScreenCount() => Screen.AllScreens.Length;
 
     public int GetSelectedScreenIndex()
     {
@@ -165,13 +161,11 @@ public class ScreenCapturerWin : IScreenCapturer
         {
             return index;
         }
+
         return 0;
     }
 
-    public Rectangle GetVirtualScreenBounds()
-    {
-        return SystemInformation.VirtualScreen;
-    }
+    public Rectangle GetVirtualScreenBounds() => SystemInformation.VirtualScreen;
 
     public void Init()
     {
@@ -203,6 +197,7 @@ public class ScreenCapturerWin : IScreenCapturer
             {
                 SelectedScreen = _bitBltScreens.Keys.First();
             }
+
             RefreshCurrentScreenBounds();
         }
     }
@@ -214,8 +209,14 @@ public class ScreenCapturerWin : IScreenCapturer
             using var bitmap = new Bitmap(CurrentScreenBounds.Width, CurrentScreenBounds.Height, PixelFormat.Format32bppArgb);
             using (var graphic = Graphics.FromImage(bitmap))
             {
-                graphic.CopyFromScreen(CurrentScreenBounds.Left, CurrentScreenBounds.Top, 0, 0, new Size(CurrentScreenBounds.Width, CurrentScreenBounds.Height));
+                graphic.CopyFromScreen(
+                    CurrentScreenBounds.Left,
+                    CurrentScreenBounds.Top,
+                    0,
+                    0,
+                    new Size(CurrentScreenBounds.Width, CurrentScreenBounds.Height));
             }
+
             return Result.Ok(bitmap.ToSKBitmap());
         }
         catch (Exception ex)
@@ -253,11 +254,14 @@ public class ScreenCapturerWin : IScreenCapturer
                 {
                     outputDuplication.ReleaseFrame();
                 }
-                catch { }
+                catch
+                {
+                }
+
                 return Result.Fail<SKBitmap>("No frames were accumulated.");
             }
 
-            using Texture2D screenTexture2D = screenResource.QueryInterface<Texture2D>();
+            using var screenTexture2D = screenResource.QueryInterface<Texture2D>();
             device.ImmediateContext.CopyResource(screenTexture2D, texture2D);
             var dataBox = device.ImmediateContext.MapSubresource(texture2D, 0, MapMode.Read, SharpDX.Direct3D11.MapFlags.None);
             using var bitmap = new Bitmap(bounds.Width, bounds.Height, PixelFormat.Format32bppArgb);
@@ -270,6 +274,7 @@ public class ScreenCapturerWin : IScreenCapturer
                 dataBoxPointer = IntPtr.Add(dataBoxPointer, dataBox.RowPitch);
                 bitmapDataPointer = IntPtr.Add(bitmapDataPointer, bitmapData.Stride);
             }
+
             bitmap.UnlockBits(bitmapData);
             device.ImmediateContext.UnmapSubresource(texture2D, 0);
             screenResource?.Dispose();
@@ -291,6 +296,7 @@ public class ScreenCapturerWin : IScreenCapturer
                 default:
                     break;
             }
+
             return Result.Ok(bitmap.ToSKBitmap());
         }
         catch (Exception ex)
@@ -303,7 +309,9 @@ public class ScreenCapturerWin : IScreenCapturer
             {
                 dxOutput.OutputDuplication.ReleaseFrame();
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         return Result.Fail<SKBitmap>("Failed to get DirectX frame.");
@@ -317,8 +325,11 @@ public class ScreenCapturerWin : IScreenCapturer
             {
                 screen.Dispose();
             }
-            catch { }
+            catch
+            {
+            }
         }
+
         _directxScreens.Clear();
     }
 
@@ -362,7 +373,11 @@ public class ScreenCapturerWin : IScreenCapturer
                             OptionFlags = ResourceOptionFlags.None,
                             MipLevels = 1,
                             ArraySize = 1,
-                            SampleDescription = { Count = 1, Quality = 0 },
+                            SampleDescription =
+                            {
+                                Count = 1,
+                                Quality = 0
+                            },
                             Usage = ResourceUsage.Staging
                         };
 
@@ -370,11 +385,7 @@ public class ScreenCapturerWin : IScreenCapturer
 
                         _directxScreens.Add(
                             output1.Description.DeviceName,
-                            new DirectXOutput(adapter,
-                                device,
-                                output1.DuplicateOutput(device),
-                                texture2D,
-                                output1.Description.Rotation));
+                            new DirectXOutput(adapter, device, output1.DuplicateOutput(device), texture2D, output1.Description.Rotation));
                     }
                     catch (Exception ex)
                     {
@@ -404,15 +415,15 @@ public class ScreenCapturerWin : IScreenCapturer
         {
             unsafe
             {
-                byte* scan = (byte*)bitmap.GetPixels();
+                var scan = (byte*)bitmap.GetPixels();
 
                 for (var row = 0; row < height; row++)
                 {
                     for (var column = 0; column < width; column++)
                     {
-                        var index = row * width * bytesPerPixel + column * bytesPerPixel;
+                        var index = (row * width * bytesPerPixel) + (column * bytesPerPixel);
 
-                        byte* data = scan + index;
+                        var data = scan + index;
 
                         for (var i = 0; i < bytesPerPixel; i++)
                         {
@@ -450,8 +461,5 @@ public class ScreenCapturerWin : IScreenCapturer
         }
     }
 
-    private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
-    {
-        RefreshCurrentScreenBounds();
-    }
+    private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e) => RefreshCurrentScreenBounds();
 }

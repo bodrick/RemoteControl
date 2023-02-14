@@ -1,4 +1,4 @@
-﻿namespace Immense.RemoteControl.Shared.Services;
+namespace Immense.RemoteControl.Shared.Services;
 
 public interface ISystemTime
 {

@@ -29,10 +29,7 @@ public class RemoteControlAccessServiceLinux : IRemoteControlAccessService
             };
 
             var closeSignal = new SemaphoreSlim(0, 1);
-            promptWindow.Closed += (sender, arg) =>
-            {
-                closeSignal.Release();
-            };
+            promptWindow.Closed += (sender, arg) => closeSignal.Release();
 
             // We can't use ShowDialog here because the MainWindow might not exist,
             // which is required.

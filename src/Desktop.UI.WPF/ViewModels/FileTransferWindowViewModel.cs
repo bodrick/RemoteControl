@@ -102,6 +102,7 @@ public class FileTransferWindowViewModel : BrandedViewModelBase, IFileTransferWi
         {
             return;
         }
+
         foreach (var file in ofd.FileNames)
         {
             if (File.Exists(file))
@@ -129,14 +130,8 @@ public class FileTransferWindowViewModel : BrandedViewModelBase, IFileTransferWi
             FilePath = filePath
         };
 
-        _dispatcher.InvokeWpf(() =>
-        {
-            FileUploads.Add(fileUpload);
-        });
+        _dispatcher.InvokeWpf(() => FileUploads.Add(fileUpload));
 
-        await _fileTransferService.UploadFileAsync(fileUpload, _viewer, fileUpload.CancellationTokenSource.Token, (double progress) =>
-        {
-            _dispatcher.InvokeWpf(() => fileUpload.PercentProgress = progress);
-        });
+        await _fileTransferService.UploadFileAsync(fileUpload, _viewer, fileUpload.CancellationTokenSource.Token, (double progress) => _dispatcher.InvokeWpf(() => fileUpload.PercentProgress = progress));
     }
 }

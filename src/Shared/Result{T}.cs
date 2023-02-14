@@ -3,12 +3,13 @@ using System.Runtime.Serialization;
 namespace Immense.RemoteControl.Shared;
 
 [DataContract]
-public class Result
+public class Result<T>
 {
-    public Result(bool isSuccess, string? error = null, Exception? exception = null)
+    public Result(bool isSuccess, T? value, string? error = null, Exception? exception = null)
     {
         IsSuccess = isSuccess;
         Error = error;
+        Value = value;
         Exception = exception;
 
         if (!IsSuccess && string.IsNullOrWhiteSpace(Error) && Exception is null)
@@ -36,17 +37,6 @@ public class Result
     [DataMember]
     public bool IsSuccess { get; init; }
 
-    public static Result<T> Empty<T>() => new(true, default);
-
-    public static Result Fail(string error) => new(false, error);
-
-    public static Result Fail(Exception ex) => new(false, null, ex);
-
-    public static Result<T> Fail<T>(string error) => new(false, default, error);
-
-    public static Result<T> Fail<T>(Exception ex) => new(false, default, exception: ex);
-
-    public static Result Ok() => new(true);
-
-    public static Result<T> Ok<T>(T value) => new(true, value);
+    [DataMember]
+    public T? Value { get; init; }
 }

@@ -1,4 +1,4 @@
-﻿using Immense.RemoteControl.Desktop.Shared.Abstractions;
+using Immense.RemoteControl.Desktop.Shared.Abstractions;
 using Immense.RemoteControl.Desktop.Shared.Extensions;
 using Immense.RemoteControl.Desktop.Shared.Native.Win32;
 using Immense.RemoteControl.Desktop.UI.WPF.Services;
@@ -59,16 +59,10 @@ public static class Startup
 
     private static void RelaunchElevated()
     {
-        var commandLine = Win32Interop.GetCommandLine().Replace(" --elevate", "");
+        var commandLine = Win32Interop.GetCommandLine().Replace(" --elevate", string.Empty);
 
         Console.WriteLine($"Elevating process {commandLine}.");
-        var result = Win32Interop.OpenInteractiveProcess(
-            commandLine,
-            -1,
-            false,
-            "default",
-            true,
-            out var procInfo);
+        var result = Win32Interop.OpenInteractiveProcess(commandLine, -1, false, "default", true, out var procInfo);
         Console.WriteLine($"Elevate result: {result}. Process ID: {procInfo.dwProcessId}.");
         Environment.Exit(0);
     }

@@ -1,4 +1,4 @@
-﻿using Immense.RemoteControl.Server.Abstractions;
+using Immense.RemoteControl.Server.Abstractions;
 using Immense.RemoteControl.Server.Models;
 using Immense.RemoteControl.Server.Services;
 using Immense.RemoteControl.Shared;
@@ -29,8 +29,6 @@ public class DesktopHub : Hub
         _hubEvents = hubEvents;
         _logger = logger;
     }
-
-  
 
     private RemoteControlSession SessionInfo
     {
@@ -76,7 +74,7 @@ public class DesktopHub : Hub
 
         while (true)
         {
-            sessionId = "";
+            sessionId = string.Empty;
             for (var i = 0; i < 3; i++)
             {
                 sessionId += random.Next(0, 999).ToString().PadLeft(3, '0');

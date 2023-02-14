@@ -23,11 +23,12 @@ public class ClipboardServiceWin : IClipboardService
 
     public void BeginWatching()
     {
-        _dispatcher.InvokeWpf(() =>
-        {
-            _dispatcher.CurrentApp.Exit -= App_Exit;
-            _dispatcher.CurrentApp.Exit += App_Exit;
-        });
+        _dispatcher.InvokeWpf(
+            () =>
+            {
+                _dispatcher.CurrentApp.Exit -= App_Exit;
+                _dispatcher.CurrentApp.Exit += App_Exit;
+            });
 
         StopWatching();
 
@@ -38,24 +39,25 @@ public class ClipboardServiceWin : IClipboardService
 
     public Task SetTextAsync(string clipboardText)
     {
-        var thread = new Thread(() =>
-        {
-            try
+        var thread = new Thread(
+            () =>
             {
-                if (string.IsNullOrWhiteSpace(clipboardText))
+                try
                 {
-                    Clipboard.Clear();
+                    if (string.IsNullOrWhiteSpace(clipboardText))
+                    {
+                        Clipboard.Clear();
+                    }
+                    else
+                    {
+                        Clipboard.SetText(clipboardText);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Clipboard.SetText(clipboardText);
+                    _logger.LogError(ex, "Error while setting clipboard text.");
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while setting clipboard text.");
-            }
-        });
+            });
         thread.SetApartmentState(ApartmentState.STA);
         thread.IsBackground = true;
         thread.Start();
@@ -70,34 +72,37 @@ public class ClipboardServiceWin : IClipboardService
             _cancelTokenSource?.Cancel();
             _cancelTokenSource?.Dispose();
         }
-        catch { }
+        catch
+        {
+        }
     }
 
-    private void App_Exit(object sender, System.Windows.ExitEventArgs e)
-    {
-        _cancelTokenSource?.Cancel();
-    }
+    private void App_Exit(object sender, System.Windows.ExitEventArgs e) => _cancelTokenSource?.Cancel();
 
     private void WatchClipboard(CancellationToken cancelToken)
     {
-        var thread = new Thread(() =>
-        {
-            while (!cancelToken.IsCancellationRequested)
+        var thread = new Thread(
+            () =>
             {
-                try
+                while (!cancelToken.IsCancellationRequested)
                 {
-                    Win32Interop.SwitchToInputDesktop();
-
-                    if (Clipboard.ContainsText() && Clipboard.GetText() != _clipboardText)
+                    try
                     {
-                        _clipboardText = Clipboard.GetText();
-                        ClipboardTextChanged?.Invoke(this, _clipboardText);
+                        Win32Interop.SwitchToInputDesktop();
+
+                        if (Clipboard.ContainsText() && Clipboard.GetText() != _clipboardText)
+                        {
+                            _clipboardText = Clipboard.GetText();
+                            ClipboardTextChanged?.Invoke(this, _clipboardText);
+                        }
                     }
+                    catch
+                    {
+                    }
+
+                    Thread.Sleep(500);
                 }
-                catch { }
-                Thread.Sleep(500);
-            }
-        });
+            });
         thread.SetApartmentState(ApartmentState.STA);
         thread.IsBackground = true;
         thread.Start();

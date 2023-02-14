@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using CommunityToolkit.Mvvm.Messaging;
 using Immense.RemoteControl.Desktop.Shared.Enums;
 using Immense.RemoteControl.Desktop.Shared.Messages;
@@ -125,7 +125,7 @@ public class AppState : IAppState
                     if (!key.Contains('-'))
                     {
                         _logger.LogWarning("Command line arguments are invalid.  Key: {key}", key);
-                        i -= 1;
+                        i--;
                         continue;
                     }
 

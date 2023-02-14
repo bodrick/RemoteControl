@@ -16,11 +16,9 @@ namespace Immense.RemoteControl.Desktop.Windows.Services;
 
 public class FileTransferServiceWin : IFileTransferService
 {
-    private static readonly ConcurrentDictionary<string, FileStream> _partialTransfers =
-        new();
+    private static readonly ConcurrentDictionary<string, FileStream> _partialTransfers = new();
 
-    private static readonly ConcurrentDictionary<string, FileTransferWindow> _fileTransferWindows =
-        new();
+    private static readonly ConcurrentDictionary<string, FileTransferWindow> _fileTransferWindows = new();
 
     private static readonly SemaphoreSlim _writeLock = new(1, 1);
     private static MessageBoxResult? _result;
@@ -28,10 +26,7 @@ public class FileTransferServiceWin : IFileTransferService
     private readonly IViewModelFactory _viewModelFactory;
     private readonly ILogger<FileTransferServiceWin> _logger;
 
-    public FileTransferServiceWin(
-        IWindowsUiDispatcher dispatcher,
-        IViewModelFactory viewModelFactory,
-        ILogger<FileTransferServiceWin> logger)
+    public FileTransferServiceWin(IWindowsUiDispatcher dispatcher, IViewModelFactory viewModelFactory, ILogger<FileTransferServiceWin> logger)
     {
         _dispatcher = dispatcher;
         _viewModelFactory = viewModelFactory;
@@ -44,9 +39,8 @@ public class FileTransferServiceWin : IFileTransferService
         return Directory.CreateDirectory(Path.Combine(programDataPath, "Remotely", "Shared")).FullName;
     }
 
-    public void OpenFileTransferWindow(IViewer viewer)
-    {
-        _dispatcher.InvokeWpf(() =>
+    public void OpenFileTransferWindow(IViewer viewer) => _dispatcher.InvokeWpf(
+        () =>
         {
             if (_fileTransferWindows.TryGetValue(viewer.ViewerConnectionID, out var window))
             {
@@ -56,15 +50,11 @@ public class FileTransferServiceWin : IFileTransferService
             {
                 window = new FileTransferWindow();
                 window.DataContext = _viewModelFactory.CreateFileTransferWindowViewModel(viewer);
-                window.Closed += (sender, arg) =>
-                {
-                    _fileTransferWindows.Remove(viewer.ViewerConnectionID, out _);
-                };
+                window.Closed += (sender, arg) => _fileTransferWindows.Remove(viewer.ViewerConnectionID, out _);
                 _fileTransferWindows.AddOrUpdate(viewer.ViewerConnectionID, window, (k, v) => window);
                 window.Show();
             }
         });
-    }
 
     public async Task ReceiveFileAsync(byte[] buffer, string fileName, string messageId, bool endOfFile, bool startOfFile)
     {
@@ -190,7 +180,8 @@ public class FileTransferServiceWin : IFileTransferService
         // Prevent multiple dialogs from popping up.
         if (_result is null)
         {
-            _result = System.Windows.MessageBox.Show("File transfer complete.  Show folder?",
+            _result = System.Windows.MessageBox.Show(
+                "File transfer complete.  Show folder?",
                 "Transfer Complete",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question,

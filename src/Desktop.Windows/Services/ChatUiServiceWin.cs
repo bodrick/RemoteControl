@@ -15,10 +15,7 @@ public class ChatUiServiceWin : IChatUiService
     private readonly IShutdownService _shutdownService;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public ChatUiServiceWin(
-        IWindowsUiDispatcher dispatcher, 
-        IShutdownService shutdownService,
-        IViewModelFactory viewModelFactory)
+    public ChatUiServiceWin(IWindowsUiDispatcher dispatcher, IShutdownService shutdownService, IViewModelFactory viewModelFactory)
     {
         _dispatcher = dispatcher;
         _shutdownService = shutdownService;
@@ -31,28 +28,28 @@ public class ChatUiServiceWin : IChatUiService
 
     public Task ReceiveChatAsync(ChatMessage chatMessage)
     {
-        _dispatcher.InvokeWpf(() =>
-        {
-            if (chatMessage.Disconnected)
+        _dispatcher.InvokeWpf(
+            () =>
             {
-                // TODO: IDialogService
-                System.Windows.MessageBox.Show("Your partner has disconnected.", "Partner Disconnected", MessageBoxButton.OK, MessageBoxImage.Information);
-                _shutdownService.ShutdownAsync();
-                return;
-            }
+                if (chatMessage.Disconnected)
+                {
+                    // TODO: IDialogService
+                    System.Windows.MessageBox.Show("Your partner has disconnected.", "Partner Disconnected", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _shutdownService.ShutdownAsync();
+                    return;
+                }
 
-            if (_chatViewModel != null)
-            {
-                _chatViewModel.SenderName = chatMessage.SenderName;
-                _chatViewModel.ChatMessages.Add(chatMessage);
-            }
-        });
+                if (_chatViewModel != null)
+                {
+                    _chatViewModel.SenderName = chatMessage.SenderName;
+                    _chatViewModel.ChatMessages.Add(chatMessage);
+                }
+            });
         return Task.CompletedTask;
     }
 
-    public void ShowChatWindow(string organizationName, StreamWriter writer)
-    {
-        _dispatcher.InvokeWpf(() =>
+    public void ShowChatWindow(string organizationName, StreamWriter writer) => _dispatcher.InvokeWpf(
+        () =>
         {
             _chatViewModel = _viewModelFactory.CreateChatWindowViewModel(organizationName, writer);
             var chatWindow = new ChatWindow();
@@ -60,10 +57,6 @@ public class ChatUiServiceWin : IChatUiService
             chatWindow.DataContext = _chatViewModel;
             chatWindow.Show();
         });
-    }
 
-    private void ChatWindow_Closing(object? sender, CancelEventArgs e)
-    {
-        ChatWindowClosed?.Invoke(this, EventArgs.Empty);
-    }
+    private void ChatWindow_Closing(object? sender, CancelEventArgs e) => ChatWindowClosed?.Invoke(this, EventArgs.Empty);
 }

@@ -10,6 +10,7 @@ public interface IChatHostService
 {
     Task StartChatAsync(string requesterID, string organizationName);
 }
+
 public class ChatHostService : IChatHostService
 {
     private readonly IChatUiService _chatUiService;
@@ -73,6 +74,7 @@ public class ChatHostService : IChatHostService
                         _logger.LogWarning("Deserialized message was null.  Value: {value}", messageJson);
                         continue;
                     }
+
                     await _chatUiService.ReceiveChatAsync(chatMessage);
                 }
             }

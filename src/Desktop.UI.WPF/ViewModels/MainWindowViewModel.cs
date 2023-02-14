@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Security.Principal;
 using System.Windows;
@@ -125,7 +125,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
 
     public void CopyLink()
     {
-        Clipboard.SetText($"{Host}/RemoteControl/Viewer?sessionId={StatusMessage?.Replace(" ", "")}");
+        Clipboard.SetText($"{Host}/RemoteControl/Viewer?sessionId={StatusMessage?.Replace(" ", string.Empty)}");
     }
 
     public async Task InitAsync()
@@ -172,10 +172,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
                     return Task.CompletedTask;
                 };
 
-                _hubConnection.Connection.Reconnected += async (id) =>
-                {
-                    await GetSessionIDAsync();
-                };
+                _hubConnection.Connection.Reconnected += async (id) => await GetSessionIDAsync();
 
                 await ApplyBrandingAsync();
 
@@ -201,10 +198,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
 
     private void Application_Exit(object sender, ExitEventArgs e)
     {
-        _dispatcher.InvokeWpf(() =>
-        {
-            Viewers.Clear();
-        });
+        _dispatcher.InvokeWpf(() => Viewers.Clear());
     }
 
     private async Task ChangeServerAsync()
@@ -218,7 +212,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
         try
         {
             //var filePath = Process.GetCurrentProcess().MainModule.FileName;
-            var commandLine = Win32Interop.GetCommandLine().Replace(" --elevate", "");
+            var commandLine = Win32Interop.GetCommandLine().Replace(" --elevate", string.Empty);
             var sections = commandLine.Split('"', StringSplitOptions.RemoveEmptyEntries);
             var filePath = sections.First();
             var arguments = string.Join('"', sections.Skip(1));
@@ -231,8 +225,12 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
             Process.Start(psi);
             Environment.Exit(0);
         }
+
         // Exception can be thrown if UAC is dialog is cancelled.
-        catch { }
+        catch
+        {
+            // ignored
+        }
     }
 
     private void ElevateToService()
@@ -245,7 +243,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
                 CreateNoWindow = true
             };
             //var filePath = Process.GetCurrentProcess().MainModule.FileName;
-            var commandLine = Win32Interop.GetCommandLine().Replace(" --elevate", "");
+            var commandLine = Win32Interop.GetCommandLine().Replace(" --elevate", string.Empty);
             var sections = commandLine.Split('"', StringSplitOptions.RemoveEmptyEntries);
             var filePath = sections.First();
             var arguments = string.Join('"', sections.Skip(1));
@@ -270,7 +268,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
         var sessionId = await _hubConnection.GetSessionIDAsync();
         await _hubConnection.SendAttendedSessionInfoAsync(Environment.MachineName);
 
-        var formattedSessionID = "";
+        var formattedSessionID = string.Empty;
         for (var i = 0; i < sessionId.Length; i += 3)
         {
             formattedSessionID += $"{sessionId.Substring(i, 3)} ";
@@ -299,7 +297,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
         var result = viewModel.Host?.Trim()?.TrimEnd('/');
 
         if (!Uri.TryCreate(result, UriKind.Absolute, out var serverUri) ||
-            serverUri.Scheme != Uri.UriSchemeHttp && serverUri.Scheme != Uri.UriSchemeHttps)
+            (serverUri.Scheme != Uri.UriSchemeHttp && serverUri.Scheme != Uri.UriSchemeHttps))
         {
             _logger.LogWarning("Server URL is not valid.");
             MessageBox.Show("Server URL must be a valid Uri (e.g. https://example.com).", "Invalid Server URL", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -343,10 +341,7 @@ public class MainWindowViewModel : BrandedViewModelBase, IMainWindowViewModel
 
     private void ViewerAdded(object? sender, IViewer viewer)
     {
-        _dispatcher.InvokeWpf(() =>
-        {
-            Viewers.Add(viewer);
-        });
+        _dispatcher.InvokeWpf(() => Viewers.Add(viewer));
     }
 
     private void ViewerRemoved(object? sender, string viewerID)

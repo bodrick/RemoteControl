@@ -8,10 +8,7 @@ using WindowsDesktopExample;
 // The service provider is returned in case it's needed.
 var provider = await Startup.UseRemoteControlClientAsync(
     args,
-    config =>
-    {
-        config.AddBrandingProvider<BrandingProvider>();
-    },
+    config => config.AddBrandingProvider<BrandingProvider>(),
     services =>
     {
         // Add some other services here if I wanted.
@@ -26,10 +23,7 @@ var provider = await Startup.UseRemoteControlClientAsync(
     "https://localhost:7024");
 
 var shutdownService = provider.GetRequiredService<IShutdownService>();
-Console.CancelKeyPress += async (s, e) =>
-{
-    await shutdownService.ShutdownAsync();
-};
+Console.CancelKeyPress += async (s, e) => await shutdownService.ShutdownAsync();
 
 var dispatcher = provider.GetRequiredService<IAvaloniaDispatcher>();
 

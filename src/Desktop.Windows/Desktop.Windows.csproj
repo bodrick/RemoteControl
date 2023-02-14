@@ -1,15 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0-windows7.0</TargetFramework>
-	<UseWPF>true</UseWPF>
-	<UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>Immense.RemoteControl.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <AssemblyName>Immense.RemoteControl.$(MSBuildProjectName)</AssemblyName>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,5 +18,5 @@
     <ProjectReference Include="..\Desktop.Shared\Desktop.Shared.csproj" />
     <ProjectReference Include="..\Desktop.UI.WPF\Desktop.UI.WPF.csproj" />
   </ItemGroup>
-	
+
 </Project>

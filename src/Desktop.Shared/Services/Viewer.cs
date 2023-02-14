@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using Immense.RemoteControl.Desktop.Shared.Abstractions;
 using Immense.RemoteControl.Shared.Models;
 using Microsoft.Extensions.Logging;
@@ -75,7 +75,6 @@ public class Viewer : IViewer
     private readonly ILogger<Viewer> _logger;
     private readonly ConcurrentQueue<SentFrame> _receivedFrames = new();
     private readonly ISystemTime _systemTime;
-    private bool _disconnectRequested;
 
     public Viewer(
         IDesktopHubConnection casterSocket,
@@ -102,14 +101,7 @@ public class Viewer : IViewer
 
     public double CurrentMbps { get; private set; }
 
-    public bool DisconnectRequested
-    {
-        get => _disconnectRequested;
-        set
-        {
-            _disconnectRequested = value;
-        }
-    }
+    public bool DisconnectRequested { get; set; }
 
     public bool HasControl { get; set; } = true;
 
@@ -175,11 +167,13 @@ public class Viewer : IViewer
             RoundTripLatency = _systemTime.Now - frame.Timestamp;
             _receivedFrames.Enqueue(new SentFrame(frame.FrameSize, _systemTime.Now));
         }
+
         while (_receivedFrames.TryPeek(out var oldestFrame) &&
             _systemTime.Now - oldestFrame.Timestamp > TimeSpan.FromSeconds(1))
         {
             _receivedFrames.TryDequeue(out _);
         }
+
         CurrentMbps = (double)_receivedFrames.Sum(x => x.FrameSize) / 1024 / 1024 * 8;
     }
 

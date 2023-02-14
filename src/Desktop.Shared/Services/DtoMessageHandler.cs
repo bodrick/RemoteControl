@@ -12,6 +12,7 @@ public interface IDtoMessageHandler
 {
     Task ParseMessageAsync(IViewer viewer, byte[] message);
 }
+
 public class DtoMessageHandler : IDtoMessageHandler
 {
     private readonly IAudioCapturer _audioCapturer;
@@ -64,6 +65,7 @@ public class DtoMessageHandler : IDtoMessageHandler
                             return;
                         }
                     }
+
                     break;
                 default:
                     break;
@@ -151,7 +153,7 @@ public class DtoMessageHandler : IDtoMessageHandler
         {
             return;
         }
-        
+
         if (dto!.TypeText)
         {
             _keyboardMouseInput.SendText(dto.Text);
@@ -168,7 +170,7 @@ public class DtoMessageHandler : IDtoMessageHandler
         {
             return;
         }
-        
+
         await _fileTransferService.ReceiveFileAsync(dto!.Buffer,
             dto.FileName,
             dto.MessageId,
@@ -192,12 +194,13 @@ public class DtoMessageHandler : IDtoMessageHandler
         {
             return;
         }
-        
+
         if (dto?.Key is null)
         {
             _logger.LogWarning("Key input is empty.");
             return;
         }
+
         _keyboardMouseInput.SendKeyDown(dto.Key);
     }
 
@@ -225,12 +228,13 @@ public class DtoMessageHandler : IDtoMessageHandler
         {
             return;
         }
-        
+
         if (dto?.Key is null)
         {
             _logger.LogWarning("Key input is empty.");
             return;
         }
+
         _keyboardMouseInput.SendKeyUp(dto.Key);
     }
 
@@ -250,7 +254,7 @@ public class DtoMessageHandler : IDtoMessageHandler
         {
             return;
         }
-        
+
         _keyboardMouseInput.SendMouseMove(dto!.PercentX, dto.PercentY, viewer);
     }
 
@@ -321,6 +325,7 @@ public class DtoMessageHandler : IDtoMessageHandler
         {
             return;
         }
+
         _keyboardMouseInput.ToggleBlockInput(dto!.ToggleOn);
     }
 }

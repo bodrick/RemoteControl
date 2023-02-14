@@ -14,7 +14,7 @@ namespace Immense.RemoteControl.Desktop.Shared.Extensions;
 public static class IServiceCollectionExtensions
 {
     /// <summary>
-    /// For internal use only.  I'd normally make this internal instead of public, 
+    /// For internal use only.  I'd normally make this internal instead of public,
     /// but for some reason, <see cref="InternalsVisibleToAttribute"/> in this
     /// project's AssemblyInfo isn't working.
     /// </summary>
@@ -92,7 +92,7 @@ public static class IServiceCollectionExtensions
             new[] { "-o", "--org-name" },
             "The organization name of the technician requesting to connect.");
         rootCommand.AddOption(organizationNameOption);
-       
+
         rootCommand.SetHandler(
             (
                 host,
@@ -166,10 +166,7 @@ public static class IServiceCollectionExtensions
 
     private static void AddServices(IServiceCollection services, Action<IServiceCollection> platformServicesConfig)
     {
-        services.AddLogging(builder =>
-        {
-            builder.AddConsole().AddDebug();
-        });
+        services.AddLogging(builder => builder.AddConsole().AddDebug());
 
         services.AddSingleton<ISystemTime, SystemTime>();
         services.AddSingleton<IScreenCaster, ScreenCaster>();

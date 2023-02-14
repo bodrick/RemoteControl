@@ -54,10 +54,7 @@ public class FileTransferServiceLinux : IFileTransferService
                 {
                     DataContext = _viewModelFactory.CreateFileTransferWindowViewModel(viewer)
                 };
-                window.Closed += (sender, arg) =>
-                {
-                    _fileTransferWindows.Remove(viewer.ViewerConnectionID, out _);
-                };
+                window.Closed += (sender, arg) => _fileTransferWindows.Remove(viewer.ViewerConnectionID, out _);
                 _fileTransferWindows.AddOrUpdate(viewer.ViewerConnectionID, window, (k, v) => window);
                 window.Show();
             }

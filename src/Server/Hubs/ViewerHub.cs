@@ -1,4 +1,4 @@
-﻿using Immense.RemoteControl.Server.Abstractions;
+using Immense.RemoteControl.Server.Abstractions;
 using Immense.RemoteControl.Server.Filters;
 using Immense.RemoteControl.Server.Models;
 using Immense.RemoteControl.Server.Services;
@@ -43,6 +43,7 @@ public class ViewerHub : Hub
             {
                 return requesterName;
             }
+
             return string.Empty;
         }
 
@@ -177,7 +178,7 @@ public class ViewerHub : Hub
             SessionInfo.RequesterUserName = Context.User.Identity.Name ?? string.Empty;
         }
 
-        var logMessage = $"Remote control session requested.  " +
+        var logMessage = "Remote control session requested.  " +
                             $"Login ID (if logged in): {Context.User?.Identity?.Name}.  " +
                             $"Machine Name: {SessionInfo.MachineName}.  " +
                             $"Requester Name (if specified): {RequesterDisplayName}.  " +
@@ -204,9 +205,9 @@ public class ViewerHub : Hub
             SessionInfo.Mode = RemoteControlMode.Attended;
             await Clients.Caller.SendAsync("RequestingScreenCast");
             await _desktopHub.Clients.Client(SessionInfo.DesktopConnectionId).SendAsync(
-                "RequestScreenCast", 
-                Context.ConnectionId, 
-                RequesterDisplayName, 
+                "RequestScreenCast",
+                Context.ConnectionId,
+                RequesterDisplayName,
                 _viewerHubDataProvider.RemoteControlNotifyUser,
                 SessionInfo.StreamId);
         }

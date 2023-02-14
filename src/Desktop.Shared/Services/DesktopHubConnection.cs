@@ -123,6 +123,7 @@ public class DesktopHubConnection : IDesktopHubConnection
                 {
                     _logger.LogError(ex, "Error in hub connection.");
                 }
+
                 await Task.Delay(3_000, cancellationToken);
 
                 if (sw.Elapsed > timeout)
@@ -371,6 +372,7 @@ public class DesktopHubConnection : IDesktopHubConnection
                 viewer.DisconnectRequested = true;
                 viewer.Dispose();
             }
+
             _appState.InvokeViewerRemoved(viewerID);
         });
     }

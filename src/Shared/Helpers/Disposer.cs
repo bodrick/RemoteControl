@@ -1,4 +1,4 @@
-﻿namespace Immense.RemoteControl.Shared.Helpers;
+namespace Immense.RemoteControl.Shared.Helpers;
 
 public static class Disposer
 {
@@ -15,7 +15,10 @@ public static class Disposer
             {
                 disposable?.Dispose();
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }

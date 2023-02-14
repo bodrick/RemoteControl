@@ -12,10 +12,7 @@ public class AudioCapturerWin : IAudioCapturer
     private WasapiLoopbackCapture? _capturer;
     private WaveFormat? _targetFormat;
 
-    public AudioCapturerWin(ILogger<AudioCapturerWin> logger)
-    {
-        _logger = logger;
-    }
+    public AudioCapturerWin(ILogger<AudioCapturerWin> logger) => _logger = logger;
 
     public event EventHandler<byte[]>? AudioSampleReady;
 
@@ -47,7 +44,9 @@ public class AudioCapturerWin : IAudioCapturer
                 await SendTempBufferAsync(args.Buffer);
             }
         }
-        catch { }
+        catch
+        {
+        }
         finally
         {
             _sendLock.Release();
@@ -76,6 +75,7 @@ public class AudioCapturerWin : IAudioCapturer
         {
             WaveFileWriter.WriteWavFileToStream(ms3, resampler);
         }
+
         AudioSampleReady?.Invoke(this, ms3.ToArray());
     }
 
@@ -90,14 +90,11 @@ public class AudioCapturerWin : IAudioCapturer
 
             _capturer.StartRecording();
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error while creating audio capturer.  Make sure a sound device is installed and working.");
         }
     }
 
-    private void Stop()
-    {
-        _capturer?.StopRecording();
-    }
+    private void Stop() => _capturer?.StopRecording();
 }

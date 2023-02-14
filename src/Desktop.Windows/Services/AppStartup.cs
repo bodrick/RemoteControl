@@ -75,26 +75,22 @@ internal class AppStartup : IAppStartup
         switch (_appState.Mode)
         {
             case AppMode.Unattended:
-                _dispatcher.InvokeWpf(() =>
-                {
-                    System.Windows.Application.Current!.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                });
+                _dispatcher.InvokeWpf(() => System.Windows.Application.Current!.ShutdownMode = ShutdownMode.OnExplicitShutdown);
                 await StartScreenCastingAsync().ConfigureAwait(false);
                 break;
             case AppMode.Attended:
-                _dispatcher.InvokeWpf(() =>
-                {
-                    _mainWindow = new MainWindow
+                _dispatcher.InvokeWpf(
+                    () =>
                     {
-                        DataContext = _mainWindowVm
-                    };
-                    _mainWindow.Show();
-                });
+                        _mainWindow = new MainWindow
+                        {
+                            DataContext = _mainWindowVm
+                        };
+                        _mainWindow.Show();
+                    });
                 break;
             case AppMode.Chat:
-                await _chatHostService
-                    .StartChatAsync(_appState.PipeName, _appState.OrganizationName)
-                    .ConfigureAwait(false);
+                await _chatHostService.StartChatAsync(_appState.PipeName, _appState.OrganizationName).ConfigureAwait(false);
                 break;
             default:
                 break;
@@ -110,9 +106,9 @@ internal class AppStartup : IAppStartup
         }
 
         var result = await _desktopHub.SendUnattendedSessionInfoAsync(
-            _appState.SessionId, 
-            _appState.AccessKey, 
-            Environment.MachineName, 
+            _appState.SessionId,
+            _appState.AccessKey,
+            Environment.MachineName,
             _appState.RequesterName,
             _appState.OrganizationName);
 

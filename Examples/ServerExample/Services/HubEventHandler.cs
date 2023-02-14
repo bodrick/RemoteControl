@@ -75,6 +75,7 @@ internal class HubEventHandler : IHubEventHandler
             };
             Process.Start(psi);
         }
+
         return Task.CompletedTask;
     }
 

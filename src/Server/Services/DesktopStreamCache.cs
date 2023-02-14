@@ -45,6 +45,7 @@ public class DesktopStreamCache : IDesktopStreamCache
             signaler = result;
             return true;
         }
+
         signaler = StreamSignaler.Empty;
         return false;
     }

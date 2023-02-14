@@ -6,7 +6,8 @@ namespace Immense.RemoteControl.Desktop.Windows.Models;
 
 public class DirectXOutput : IDisposable
 {
-    public DirectXOutput(Adapter1 adapter,
+    public DirectXOutput(
+        Adapter1 adapter,
         SharpDX.Direct3D11.Device device,
         OutputDuplication outputDuplication,
         Texture2D texture2D,

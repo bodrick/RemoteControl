@@ -173,14 +173,17 @@ public class ImageHelper : IImageHelper
                             {
                                 top = row;
                             }
+
                             if (row > bottom)
                             {
                                 bottom = row;
                             }
+
                             if (column < left)
                             {
                                 left = column;
                             }
+
                             if (column > right)
                             {
                                 right = column;

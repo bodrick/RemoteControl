@@ -55,6 +55,7 @@ internal class AvaloniaDispatcher : IAvaloniaDispatcher
             {
                 return app.MainWindow;
             }
+
             return null;
         }
     }

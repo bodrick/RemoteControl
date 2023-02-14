@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 namespace Immense.RemoteControl.Desktop.UI.Views;
@@ -7,7 +7,7 @@ public partial class PromptForAccessWindow : Window
 {
     public PromptForAccessWindow()
     {
-        this.InitializeComponent();
+        InitializeComponent();
     }
 
     private void InitializeComponent()

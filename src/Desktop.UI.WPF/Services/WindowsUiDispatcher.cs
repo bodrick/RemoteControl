@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.Messaging;
 using Immense.RemoteControl.Desktop.Shared.Messages;
 using Immense.RemoteControl.Shared;
@@ -41,9 +41,7 @@ public class WindowsUiDispatcher : IWindowsUiDispatcher
     private Application? _wpfApp;
     private Thread? _wpfThread;
 
-    public WindowsUiDispatcher(
-        IMessenger messenger,
-        ILogger<WindowsUiDispatcher> logger)
+    public WindowsUiDispatcher(IMessenger messenger, ILogger<WindowsUiDispatcher> logger)
     {
         _messenger = messenger;
         _logger = logger;
@@ -60,14 +58,12 @@ public class WindowsUiDispatcher : IWindowsUiDispatcher
             {
                 throw new Exception("WPF app hasn't been started yet.");
             }
+
             return _wpfApp;
         }
     }
 
-    public void InvokeWinForms(Action action)
-    {
-        _backgroundForm?.Invoke(action);
-    }
+    public void InvokeWinForms(Action action) => _backgroundForm?.Invoke(action);
 
     public void InvokeWpf(Action action)
     {
@@ -82,6 +78,7 @@ public class WindowsUiDispatcher : IWindowsUiDispatcher
         {
             return default;
         }
+
         return _wpfApp.Dispatcher.Invoke(func);
     }
 
@@ -120,10 +117,7 @@ public class WindowsUiDispatcher : IWindowsUiDispatcher
         };
         _backgroundForm.Load += BackgroundForm_Load;
         _backgroundForm.FormClosing += BackgroundForm_FormClosing;
-        _winformsThread = new Thread(() =>
-        {
-            System.Windows.Forms.Application.Run(_backgroundForm);
-        })
+        _winformsThread = new Thread(() => System.Windows.Forms.Application.Run(_backgroundForm))
         {
             IsBackground = true
         };
@@ -141,32 +135,21 @@ public class WindowsUiDispatcher : IWindowsUiDispatcher
             {
                 _wpfApp = Application.Current;
 
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    Application.Current.Exit += (s, e) =>
-                    {
-                        _appExitCts.Cancel();
-                    };
-                });
+                Application.Current.Dispatcher.Invoke(() => Application.Current.Exit += (s, e) => _appExitCts.Cancel());
 
                 return true;
             }
 
             var startedSignal = new SemaphoreSlim(0, 1);
 
-            _wpfThread = new Thread(() =>
-            {
-                _wpfApp = new Application();
-                _wpfApp.Startup += (s, e) =>
+            _wpfThread = new Thread(
+                () =>
                 {
-                    startedSignal.Release();
-                };
-                _wpfApp.Exit += (s, e) =>
-                {
-                    _appExitCts.Cancel();
-                };
-                _wpfApp.Run();
-            });
+                    _wpfApp = new Application();
+                    _wpfApp.Startup += (s, e) => startedSignal.Release();
+                    _wpfApp.Exit += (s, e) => _appExitCts.Cancel();
+                    _wpfApp.Run();
+                });
 
             _wpfThread.SetApartmentState(ApartmentState.STA);
             _wpfThread.Start();

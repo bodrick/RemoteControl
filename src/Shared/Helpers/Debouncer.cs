@@ -1,15 +1,15 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
 namespace Immense.RemoteControl.Shared.Helpers;
 
 public static class Debouncer
 {
-    private static readonly ConcurrentDictionary<object, System.Timers.Timer> _timers = new();
+    private static readonly ConcurrentDictionary<object, System.Timers.Timer> Timers = new();
 
     public static void Debounce(TimeSpan wait, Action action, [CallerMemberName] string key = "")
     {
-        if (_timers.TryRemove(key, out var timer))
+        if (Timers.TryRemove(key, out var timer))
         {
             timer.Stop();
             timer.Dispose();
@@ -28,13 +28,13 @@ public static class Debouncer
             }
             finally
             {
-                if (_timers.TryGetValue(key, out var result))
+                if (Timers.TryGetValue(key, out var result))
                 {
                     result?.Dispose();
                 }
             }
         };
-        _timers.TryAdd(key, timer);
+        Timers.TryAdd(key, timer);
         timer.Start();
     }
 }

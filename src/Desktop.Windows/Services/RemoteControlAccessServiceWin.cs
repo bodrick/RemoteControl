@@ -9,9 +9,7 @@ public class RemoteControlAccessServiceWin : IRemoteControlAccessService
     private readonly IWindowsUiDispatcher _dispatcher;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public RemoteControlAccessServiceWin(
-        IWindowsUiDispatcher dispatcher,
-        IViewModelFactory viewModelFactory)
+    public RemoteControlAccessServiceWin(IWindowsUiDispatcher dispatcher, IViewModelFactory viewModelFactory)
     {
         _dispatcher = dispatcher;
         _viewModelFactory = viewModelFactory;
@@ -19,17 +17,18 @@ public class RemoteControlAccessServiceWin : IRemoteControlAccessService
 
     public Task<bool> PromptForAccessAsync(string requesterName, string organizationName)
     {
-        var result = _dispatcher.InvokeWpf(() =>
-        {
-            var viewModel = _viewModelFactory.CreatePromptForAccessViewModel(requesterName, organizationName);
-            var promptWindow = new PromptForAccessWindow
+        var result = _dispatcher.InvokeWpf(
+            () =>
             {
-                DataContext = viewModel
-            };
-            promptWindow.ShowDialog();
+                var viewModel = _viewModelFactory.CreatePromptForAccessViewModel(requesterName, organizationName);
+                var promptWindow = new PromptForAccessWindow
+                {
+                    DataContext = viewModel
+                };
+                promptWindow.ShowDialog();
 
-            return viewModel.PromptResult;
-        });
+                return viewModel.PromptResult;
+            });
 
         return Task.FromResult(result);
     }

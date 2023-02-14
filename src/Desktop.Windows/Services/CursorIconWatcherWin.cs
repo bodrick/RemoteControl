@@ -1,4 +1,4 @@
-﻿using System.Drawing.Imaging;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Timers;
@@ -62,10 +62,11 @@ public class CursorIconWatcherWin : ICursorIconWatcher
 
     private void ChangeTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
-        if (OnChange == null)
+        if (OnChange is null)
         {
             return;
         }
+
         try
         {
             _cursorInfo = new User32.CursorInfo();
@@ -89,6 +90,7 @@ public class CursorIconWatcherWin : ICursorIconWatcher
                         icon.ToBitmap().Save(ms, ImageFormat.Png);
                         OnChange?.Invoke(this, new CursorInfo(ms.ToArray(), hotspot));
                     }
+
                     _previousCursorHandle = currentCursor;
                 }
             }

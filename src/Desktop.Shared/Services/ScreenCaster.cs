@@ -94,10 +94,7 @@ public class ScreenCaster : IScreenCaster
 
             await viewer.SendWindowsSessionsAsync();
 
-            viewer.Capturer.ScreenChanged += async (sender, bounds) =>
-            {
-                await viewer.SendScreenSizeAsync(bounds.Width, bounds.Height);
-            };
+            viewer.Capturer.ScreenChanged += async (sender, bounds) => await viewer.SendScreenSizeAsync(bounds.Width, bounds.Height);
 
             // This gets disposed internally in the Capturer on the next call.
             var result = viewer.Capturer.GetNextFrame();
@@ -227,6 +224,7 @@ public class ScreenCaster : IScreenCaster
                 _logger.LogInformation("No more viewers.  Calling shutdown service.");
                 await _shutdownService.ShutdownAsync();
             }
+
             _metricsCts.Cancel();
         }
     }

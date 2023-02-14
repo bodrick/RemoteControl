@@ -18,9 +18,7 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
     private volatile bool _inputBlocked;
     private Thread? _inputProcessingThread;
 
-    public KeyboardMouseInputWin(
-        IWindowsUiDispatcher dispatcher,
-        ILogger<KeyboardMouseInputWin> logger)
+    public KeyboardMouseInputWin(IWindowsUiDispatcher dispatcher, ILogger<KeyboardMouseInputWin> logger)
     {
         _dispatcher = dispatcher;
         _logger = logger;
@@ -28,32 +26,32 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
 
     public Tuple<double, double> GetAbsolutePercentFromRelativePercent(double percentX, double percentY, IScreenCapturer capturer)
     {
-        var absoluteX = capturer.CurrentScreenBounds.Width * percentX + capturer.CurrentScreenBounds.Left - capturer.GetVirtualScreenBounds().Left;
-        var absoluteY = capturer.CurrentScreenBounds.Height * percentY + capturer.CurrentScreenBounds.Top - capturer.GetVirtualScreenBounds().Top;
+        var absoluteX = (capturer.CurrentScreenBounds.Width * percentX) + capturer.CurrentScreenBounds.Left - capturer.GetVirtualScreenBounds().Left;
+        var absoluteY = (capturer.CurrentScreenBounds.Height * percentY) + capturer.CurrentScreenBounds.Top - capturer.GetVirtualScreenBounds().Top;
         return new Tuple<double, double>(absoluteX / capturer.GetVirtualScreenBounds().Width, absoluteY / capturer.GetVirtualScreenBounds().Height);
     }
 
     public Tuple<double, double> GetAbsolutePointFromRelativePercent(double percentX, double percentY, IScreenCapturer capturer)
     {
-        var absoluteX = capturer.CurrentScreenBounds.Width * percentX + capturer.CurrentScreenBounds.Left;
-        var absoluteY = capturer.CurrentScreenBounds.Height * percentY + capturer.CurrentScreenBounds.Top;
+        var absoluteX = (capturer.CurrentScreenBounds.Width * percentX) + capturer.CurrentScreenBounds.Left;
+        var absoluteY = (capturer.CurrentScreenBounds.Height * percentY) + capturer.CurrentScreenBounds.Top;
         return new Tuple<double, double>(absoluteX, absoluteY);
     }
 
     public void Init()
     {
-        _dispatcher.InvokeWpf(() =>
-        {
-            _dispatcher.CurrentApp.Exit -= App_Exit;
-            _dispatcher.CurrentApp.Exit += App_Exit;
-        });
+        _dispatcher.InvokeWpf(
+            () =>
+            {
+                _dispatcher.CurrentApp.Exit -= App_Exit;
+                _dispatcher.CurrentApp.Exit += App_Exit;
+            });
 
         StartInputProcessingThread();
     }
 
-    public void SendKeyDown(string key)
-    {
-        TryOnInputDesktop(() =>
+    public void SendKeyDown(string key) => TryOnInputDesktop(
+        () =>
         {
             try
             {
@@ -72,19 +70,27 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
                         dwExtraInfo = GetMessageExtraInfo()
                     }
                 };
-                var input = new INPUT() { type = InputType.KEYBOARD, U = union };
-                _ = SendInput(1, new INPUT[] { input }, INPUT.Size);
+                var input = new INPUT()
+                {
+                    type = InputType.KEYBOARD,
+                    U = union
+                };
+                _ = SendInput(
+                    1,
+                    new INPUT[]
+                    {
+                        input
+                    },
+                    INPUT.Size);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while sending key down.");
             }
         });
-    }
 
-    public void SendKeyUp(string key)
-    {
-        TryOnInputDesktop(() =>
+    public void SendKeyUp(string key) => TryOnInputDesktop(
+        () =>
         {
             try
             {
@@ -104,19 +110,27 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
                         dwExtraInfo = GetMessageExtraInfo()
                     }
                 };
-                var input = new INPUT() { type = InputType.KEYBOARD, U = union };
-                _ = SendInput(1, new INPUT[] { input }, INPUT.Size);
+                var input = new INPUT()
+                {
+                    type = InputType.KEYBOARD,
+                    U = union
+                };
+                _ = SendInput(
+                    1,
+                    new INPUT[]
+                    {
+                        input
+                    },
+                    INPUT.Size);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while sending key up.");
             }
         });
-    }
 
-    public void SendMouseButtonAction(int button, ButtonAction buttonAction, double percentX, double percentY, IViewer viewer)
-    {
-        TryOnInputDesktop(() =>
+    public void SendMouseButtonAction(int button, ButtonAction buttonAction, double percentX, double percentY, IViewer viewer) => TryOnInputDesktop(
+        () =>
         {
             try
             {
@@ -135,6 +149,7 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
                             default:
                                 return;
                         }
+
                         break;
                     case 1:
                         switch (buttonAction)
@@ -148,6 +163,7 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
                             default:
                                 return;
                         }
+
                         break;
                     case 2:
                         switch (buttonAction)
@@ -161,28 +177,49 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
                             default:
                                 return;
                         }
+
                         break;
                     default:
                         return;
                 }
+
                 var xyPercent = GetAbsolutePercentFromRelativePercent(percentX, percentY, viewer.Capturer);
                 // Coordinates must be normalized.  The bottom-right coordinate is mapped to 65535.
                 var normalizedX = xyPercent.Item1 * 65535D;
                 var normalizedY = xyPercent.Item2 * 65535D;
-                var union = new InputUnion() { mi = new MOUSEINPUT() { dwFlags = MOUSEEVENTF.ABSOLUTE | mouseEvent | MOUSEEVENTF.VIRTUALDESK, dx = (int)normalizedX, dy = (int)normalizedY, time = 0, mouseData = 0, dwExtraInfo = GetMessageExtraInfo() } };
-                var input = new INPUT() { type = InputType.MOUSE, U = union };
-                _ = SendInput(1, new INPUT[] { input }, INPUT.Size);
+                var union = new InputUnion()
+                {
+                    mi = new MOUSEINPUT()
+                    {
+                        dwFlags = MOUSEEVENTF.ABSOLUTE | mouseEvent | MOUSEEVENTF.VIRTUALDESK,
+                        dx = (int)normalizedX,
+                        dy = (int)normalizedY,
+                        time = 0,
+                        mouseData = 0,
+                        dwExtraInfo = GetMessageExtraInfo()
+                    }
+                };
+                var input = new INPUT()
+                {
+                    type = InputType.MOUSE,
+                    U = union
+                };
+                _ = SendInput(
+                    1,
+                    new INPUT[]
+                    {
+                        input
+                    },
+                    INPUT.Size);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while sending mouse button.");
             }
         });
-    }
 
-    public void SendMouseMove(double percentX, double percentY, IViewer viewer)
-    {
-        TryOnInputDesktop(() =>
+    public void SendMouseMove(double percentX, double percentY, IViewer viewer) => TryOnInputDesktop(
+        () =>
         {
             try
             {
@@ -190,20 +227,39 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
                 // Coordinates must be normalized.  The bottom-right coordinate is mapped to 65535.
                 var normalizedX = xyPercent.Item1 * 65535D;
                 var normalizedY = xyPercent.Item2 * 65535D;
-                var union = new InputUnion() { mi = new MOUSEINPUT() { dwFlags = MOUSEEVENTF.ABSOLUTE | MOUSEEVENTF.MOVE | MOUSEEVENTF.VIRTUALDESK, dx = (int)normalizedX, dy = (int)normalizedY, time = 0, mouseData = 0, dwExtraInfo = GetMessageExtraInfo() } };
-                var input = new INPUT() { type = InputType.MOUSE, U = union };
-                _ = SendInput(1, new INPUT[] { input }, INPUT.Size);
+                var union = new InputUnion()
+                {
+                    mi = new MOUSEINPUT()
+                    {
+                        dwFlags = MOUSEEVENTF.ABSOLUTE | MOUSEEVENTF.MOVE | MOUSEEVENTF.VIRTUALDESK,
+                        dx = (int)normalizedX,
+                        dy = (int)normalizedY,
+                        time = 0,
+                        mouseData = 0,
+                        dwExtraInfo = GetMessageExtraInfo()
+                    }
+                };
+                var input = new INPUT()
+                {
+                    type = InputType.MOUSE,
+                    U = union
+                };
+                _ = SendInput(
+                    1,
+                    new INPUT[]
+                    {
+                        input
+                    },
+                    INPUT.Size);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while sending mouse move.");
             }
         });
-    }
 
-    public void SendMouseWheel(int deltaY)
-    {
-        TryOnInputDesktop(() =>
+    public void SendMouseWheel(int deltaY) => TryOnInputDesktop(
+        () =>
         {
             try
             {
@@ -215,20 +271,40 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
                 {
                     deltaY = 120;
                 }
-                var union = new InputUnion() { mi = new MOUSEINPUT() { dwFlags = MOUSEEVENTF.WHEEL, dx = 0, dy = 0, time = 0, mouseData = deltaY, dwExtraInfo = GetMessageExtraInfo() } };
-                var input = new INPUT() { type = InputType.MOUSE, U = union };
-                _ = SendInput(1, new INPUT[] { input }, INPUT.Size);
+
+                var union = new InputUnion()
+                {
+                    mi = new MOUSEINPUT()
+                    {
+                        dwFlags = MOUSEEVENTF.WHEEL,
+                        dx = 0,
+                        dy = 0,
+                        time = 0,
+                        mouseData = deltaY,
+                        dwExtraInfo = GetMessageExtraInfo()
+                    }
+                };
+                var input = new INPUT()
+                {
+                    type = InputType.MOUSE,
+                    U = union
+                };
+                _ = SendInput(
+                    1,
+                    new INPUT[]
+                    {
+                        input
+                    },
+                    INPUT.Size);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while sending mouse wheel.");
             }
         });
-    }
 
-    public void SendText(string transferText)
-    {
-        TryOnInputDesktop(() =>
+    public void SendText(string transferText) => TryOnInputDesktop(
+        () =>
         {
             try
             {
@@ -239,58 +315,63 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
                 _logger.LogError(ex, "Error while sending text.");
             }
         });
-    }
 
-    public void SetKeyStatesUp()
-    {
-        TryOnInputDesktop(() =>
+    public void SetKeyStatesUp() => TryOnInputDesktop(
+        () =>
         {
-            var thread = new Thread(() =>
-            {
-                foreach (VirtualKey key in Enum.GetValues(typeof(VirtualKey)))
+            var thread = new Thread(
+                () =>
                 {
-                    try
+                    foreach (VirtualKey key in Enum.GetValues(typeof(VirtualKey)))
                     {
-                        var state = GetKeyState(key);
-                        if (state == -127)
+                        try
                         {
-                            var union = new InputUnion()
+                            var state = GetKeyState(key);
+                            if (state == -127)
                             {
-                                ki = new KEYBDINPUT()
+                                var union = new InputUnion()
                                 {
-                                    wVk = key,
-                                    wScan = 0,
-                                    time = 0,
-                                    dwFlags = KEYEVENTF.KEYUP,
-                                    dwExtraInfo = GetMessageExtraInfo()
-                                }
-                            };
-                            var input = new INPUT() { type = InputType.KEYBOARD, U = union };
-                            _ = SendInput(1, new INPUT[] { input }, INPUT.Size);
+                                    ki = new KEYBDINPUT()
+                                    {
+                                        wVk = key,
+                                        wScan = 0,
+                                        time = 0,
+                                        dwFlags = KEYEVENTF.KEYUP,
+                                        dwExtraInfo = GetMessageExtraInfo()
+                                    }
+                                };
+                                var input = new INPUT()
+                                {
+                                    type = InputType.KEYBOARD,
+                                    U = union
+                                };
+                                _ = SendInput(
+                                    1,
+                                    new INPUT[]
+                                    {
+                                        input
+                                    },
+                                    INPUT.Size);
+                            }
+                        }
+                        catch
+                        {
                         }
                     }
-                    catch { }
-                }
-            });
+                });
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
         });
-    }
 
-    public void ToggleBlockInput(bool toggleOn)
-    {
-        _inputActions.Enqueue(() =>
+    public void ToggleBlockInput(bool toggleOn) => _inputActions.Enqueue(
+        () =>
         {
             _inputBlocked = toggleOn;
             var result = BlockInput(toggleOn);
             _logger.LogInformation("Result of ToggleBlockInput set to {toggleOn}: {result}", toggleOn, result);
         });
-    }
 
-    private void App_Exit(object sender, System.Windows.ExitEventArgs e)
-    {
-        _cancelTokenSource?.Cancel();
-    }
+    private void App_Exit(object sender, System.Windows.ExitEventArgs e) => _cancelTokenSource?.Cancel();
 
     private void CheckQueue(CancellationToken cancelToken)
     {
@@ -352,9 +433,7 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
             "F12" => VirtualKey.F12,
             "Meta" => VirtualKey.LWIN,
             "ContextMenu" => VirtualKey.MENU,
-            _ => key.Length == 1 ?
-                    (VirtualKey)VkKeyScan(Convert.ToChar(key)) :
-                    null
+            _ => key.Length == 1 ? (VirtualKey)VkKeyScan(Convert.ToChar(key)) : null
         };
 
         if (result is null)
@@ -362,6 +441,7 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
             _logger.LogWarning("Unable to parse key input: {key}.", key);
             return false;
         }
+
         return true;
     }
 
@@ -373,25 +453,26 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
         // After BlockInput is enabled, only simulated input coming from the same thread
         // will work.  So we have to start a new thread that runs continuously and
         // processes a queue of input events.
-        _inputProcessingThread = new Thread(() =>
-        {
-            _logger.LogInformation("New input processing thread started on thread {threadId}.", Thread.CurrentThread.ManagedThreadId);
-            _cancelTokenSource = new CancellationTokenSource();
-
-            if (_inputBlocked)
+        _inputProcessingThread = new Thread(
+            () =>
             {
-                ToggleBlockInput(true);
-            }
-            CheckQueue(_cancelTokenSource.Token);
-        });
+                _logger.LogInformation("New input processing thread started on thread {threadId}.", Thread.CurrentThread.ManagedThreadId);
+                _cancelTokenSource = new CancellationTokenSource();
+
+                if (_inputBlocked)
+                {
+                    ToggleBlockInput(true);
+                }
+
+                CheckQueue(_cancelTokenSource.Token);
+            });
 
         _inputProcessingThread.SetApartmentState(ApartmentState.STA);
         _inputProcessingThread.Start();
     }
 
-    private void TryOnInputDesktop(Action inputAction)
-    {
-        _inputActions.Enqueue(() =>
+    private void TryOnInputDesktop(Action inputAction) => _inputActions.Enqueue(
+        () =>
         {
             try
             {
@@ -404,6 +485,7 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
                     StartInputProcessingThread();
                     return;
                 }
+
                 inputAction();
             }
             catch (Exception ex)
@@ -411,5 +493,4 @@ public class KeyboardMouseInputWin : IKeyboardMouseInput
                 _logger.LogError(ex, "Error during input queue processing.");
             }
         });
-    }
 }

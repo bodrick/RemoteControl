@@ -11,10 +11,7 @@ public class ShutdownServiceWin : IShutdownService
     private readonly IWindowsUiDispatcher _dispatcher;
     private readonly ILogger<ShutdownServiceWin> _logger;
 
-    public ShutdownServiceWin(
-        IDesktopHubConnection hubConnection,
-        IWindowsUiDispatcher dispatcher,
-        ILogger<ShutdownServiceWin> logger)
+    public ShutdownServiceWin(IDesktopHubConnection hubConnection, IWindowsUiDispatcher dispatcher, ILogger<ShutdownServiceWin> logger)
     {
         _hubConnection = hubConnection;
         _dispatcher = dispatcher;
@@ -28,11 +25,8 @@ public class ShutdownServiceWin : IShutdownService
             _logger.LogInformation("Exiting process ID {procId}.", Environment.ProcessId);
             await _hubConnection.DisconnectAllViewersAsync();
             await _hubConnection.DisconnectAsync();
-            System.Windows.Forms.Application.Exit();
-            _dispatcher.InvokeWpf(() =>
-            {
-                _dispatcher.CurrentApp.Shutdown();
-            });
+            Application.Exit();
+            _dispatcher.InvokeWpf(() => _dispatcher.CurrentApp.Shutdown());
         }
         catch (Exception ex)
         {

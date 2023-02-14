@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using Immense.RemoteControl.Desktop.Shared.Abstractions;
 using Immense.RemoteControl.Desktop.Shared.Native.Linux;
@@ -34,7 +34,7 @@ public class ScreenCapturerLinux : IScreenCapturer
 
     public Rectangle CurrentScreenBounds { get; private set; }
 
-    public IntPtr Display { get; private set; }
+    public IntPtr Display { get; }
 
     public string SelectedScreen { get; private set; } = string.Empty;
 
@@ -46,7 +46,7 @@ public class ScreenCapturerLinux : IScreenCapturer
 
     public IEnumerable<string> GetDisplayNames()
     {
-        return _x11Screens.Keys.Select(x => x.ToString());
+        return _x11Screens.Keys.Select(x => x);
     }
 
     public SKRect GetFrameDiffArea()
@@ -110,11 +110,13 @@ public class ScreenCapturerLinux : IScreenCapturer
         {
             width += LibX11.XWidthOfScreen(LibX11.XScreenOfDisplay(Display, i));
         }
+
         int height = 0;
         for (var i = 0; i < GetScreenCount(); i++)
         {
             height += LibX11.XHeightOfScreen(LibX11.XScreenOfDisplay(Display, i));
         }
+
         return new Rectangle(0, 0, width, height);
     }
 
@@ -131,10 +133,10 @@ public class ScreenCapturerLinux : IScreenCapturer
 
             for (var i = 0; i < monitorCount; i++)
             {
-                var monitorPtr = new IntPtr(monitorsPtr.ToInt64() + i * monitorInfoSize);
+                var monitorPtr = new IntPtr(monitorsPtr.ToInt64() + (i * monitorInfoSize));
                 var monitorInfo = Marshal.PtrToStructure<LibXrandr.XRRMonitorInfo>(monitorPtr);
 
-                _logger.LogInformation($"Found monitor: " +
+                _logger.LogInformation("Found monitor: " +
                     $"{monitorInfo.width}," +
                     $"{monitorInfo.height}," +
                     $"{monitorInfo.x}, " +
@@ -169,6 +171,7 @@ public class ScreenCapturerLinux : IScreenCapturer
                 {
                     return;
                 }
+
                 if (_x11Screens.ContainsKey(displayName))
                 {
                     SelectedScreen = displayName;
@@ -227,7 +230,7 @@ public class ScreenCapturerLinux : IScreenCapturer
     {
         var screen = _x11Screens[SelectedScreen];
 
-        _logger.LogInformation($"Setting new screen bounds: " +
+        _logger.LogInformation("Setting new screen bounds: " +
              $"{screen.width}," +
              $"{screen.height}," +
              $"{screen.x}, " +

@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Immense.RemoteControl.Shared.Models;
@@ -9,12 +9,11 @@ namespace Immense.RemoteControl.Desktop.UI.WPF.ViewModels.Fakes;
 public class FakeBrandedViewModelBase : IBrandedViewModelBase
 {
     private readonly BrandingInfoBase _brandingInfo;
-    private BitmapImage? _icon;
 
     public FakeBrandedViewModelBase()
     {
         _brandingInfo = new BrandingInfoBase();
-        _icon = GetBitmapImageIcon(_brandingInfo);
+        Icon = GetBitmapImageIcon(_brandingInfo);
 
         TitleBackgroundColor = new SolidColorBrush(Color.FromRgb(
             _brandingInfo.TitleBackgroundRed,
@@ -32,11 +31,7 @@ public class FakeBrandedViewModelBase : IBrandedViewModelBase
            _brandingInfo.ButtonForegroundBlue));
     }
 
-    public BitmapImage? Icon
-    {
-        get => _icon;
-        set => _icon = value;
-    }
+    public BitmapImage? Icon { get; set; }
 
     public string? ProductName { get; set; } = "Test Product";
 

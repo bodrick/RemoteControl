@@ -46,6 +46,7 @@ public class ChatWindowViewModel : BrandedViewModelBase, IChatWindowViewModel
         {
             OrganizationName = organizationName;
         }
+
         CloseCommand = new RelayCommand<Window>(CloseWindow);
         MinimizeCommand = new RelayCommand<Window>(MinimizeWindow);
     }

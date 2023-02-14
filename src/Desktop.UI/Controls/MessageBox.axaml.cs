@@ -44,13 +44,11 @@ public partial class MessageBox : Window
         else
         {
             var isClosed = false;
-            messageBox.Closed += (sender, args) =>
-            {
-                isClosed = true;
-            };
+            messageBox.Closed += (sender, args) => isClosed = true;
             messageBox.Show();
             await WaitHelper.WaitForAsync(() => isClosed, TimeSpan.MaxValue);
         }
+
         return viewModel.Result;
     }
 

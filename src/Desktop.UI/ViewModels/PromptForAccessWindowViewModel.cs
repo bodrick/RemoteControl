@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Immense.RemoteControl.Desktop.Shared.Abstractions;
@@ -47,10 +47,7 @@ public class PromptForAccessWindowViewModel : BrandedViewModelBase, IPromptForAc
         }
     }
 
-    public ICommand CloseCommand { get; } = new RelayCommand<Window>(window =>
-    {
-        window?.Close();
-    });
+    public ICommand CloseCommand { get; } = new RelayCommand<Window>(window => window?.Close());
 
     public ICommand MinimizeCommand { get; } = new RelayCommand<Window>(window =>
     {
@@ -93,18 +90,12 @@ public class PromptForAccessWindowViewModel : BrandedViewModelBase, IPromptForAc
     public ICommand SetResultNo => new RelayCommand<Window>(window =>
     {
         PromptResult = false;
-        if (window is not null)
-        {
-            window.Close();
-        }
+        window?.Close();
     });
 
     public ICommand SetResultYes => new RelayCommand<Window>(window =>
     {
         PromptResult = true;
-        if (window is not null)
-        {
-            window.Close();
-        }
+        window?.Close();
     });
 }

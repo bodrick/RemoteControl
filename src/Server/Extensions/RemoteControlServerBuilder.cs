@@ -1,4 +1,4 @@
-﻿using Immense.RemoteControl.Server.Abstractions;
+using Immense.RemoteControl.Server.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Immense.RemoteControl.Server.Extensions;
@@ -27,25 +27,25 @@ internal class RemoteControlServerBuilder : IRemoteControlServerBuilder
         _services = services;
     }
 
-    public void AddHubEventHandler<T>() 
+    public void AddHubEventHandler<T>()
         where T : class, IHubEventHandler
     {
         _services.AddScoped<IHubEventHandler, T>();
     }
 
-    public void AddViewerAuthorizer<T>() 
+    public void AddViewerAuthorizer<T>()
         where T : class, IViewerAuthorizer
     {
         _services.AddScoped<IViewerAuthorizer, T>();
     }
 
-    public void AddViewerHubDataProvider<T>() 
+    public void AddViewerHubDataProvider<T>()
         where T : class, IViewerHubDataProvider
     {
         _services.AddScoped<IViewerHubDataProvider, T>();
     }
 
-    public void AddViewerPageDataProvider<T>() 
+    public void AddViewerPageDataProvider<T>()
         where T : class, IViewerPageDataProvider
     {
         _services.AddScoped<IViewerPageDataProvider, T>();

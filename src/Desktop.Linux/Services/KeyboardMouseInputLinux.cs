@@ -124,6 +124,7 @@ public class KeyboardMouseInputLinux : IKeyboardMouseInput
                 LibXtst.XTestFakeButtonEvent(Display, 5, true, 0);
                 LibXtst.XTestFakeButtonEvent(Display, 5, false, 0);
             }
+
             LibX11.XSync(Display, false);
         }
         catch (Exception ex)

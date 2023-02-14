@@ -1,4 +1,4 @@
-﻿using Immense.RemoteControl.Shared.Models.Dtos;
+using Immense.RemoteControl.Shared.Models.Dtos;
 using MessagePack;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -6,7 +6,7 @@ namespace Immense.RemoteControl.Shared.Helpers;
 
 public static class DtoChunker
 {
-    private static readonly MemoryCache _cache = new(new MemoryCacheOptions());
+    private static readonly MemoryCache Cache = new(new MemoryCacheOptions());
 
     public static IEnumerable<DtoWrapper> ChunkDto<T>(T dto, DtoType dtoType, string requestId = "", int chunkSize = 50_000)
     {
@@ -35,11 +35,13 @@ public static class DtoChunker
     {
         result = default;
 
-        var chunks = _cache.GetOrCreate(wrapper.InstanceId, entry =>
-        {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(1);
-            return new List<DtoWrapper>();
-        });
+        var chunks = Cache.GetOrCreate(
+            wrapper.InstanceId,
+            entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromMinutes(1);
+                return new List<DtoWrapper>();
+            });
 
         lock (chunks)
         {
@@ -50,12 +52,9 @@ public static class DtoChunker
                 return false;
             }
 
-            _cache.Remove(wrapper.InstanceId);
+            Cache.Remove(wrapper.InstanceId);
 
-            chunks.Sort((a, b) =>
-            {
-                return a.SequenceId - b.SequenceId;
-            });
+            chunks.Sort((a, b) => a.SequenceId - b.SequenceId);
 
             var buffer = chunks.SelectMany(x => x.DtoChunk).ToArray();
 
